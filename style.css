@@ -1,0 +1,297 @@
+
+
+ 
+ h1 {
+    text-align: center;
+    font-size: 30px;
+    background: linear-gradient(#1497be, #1c2aec);
+    color: transparent;
+    background-clip:text ;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    animation: text 5s linear infinite;
+ }
+   
+   @keyframes text{
+        0% {
+            filter: hue-rotate(0deg);
+        }
+        100% {
+            filter: hue-rotate(90deg);
+        }    
+   }
+ 
+
+body {
+    border: 5px black solid;
+    border-width: 10px;
+    width: 400px;
+    padding: 30px 15px 50px 15px;
+    margin: 0;
+    background-color: #efefef;
+}
+#ofertas {
+    background-color: red;
+    text-align: center;
+}
+#comprar {
+    background-color: dodgerblue;
+}
+#ofertas, #horno, #batidora, #comprar {
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    cursor: pointer;
+   
+
+}
+
+#batidora, #horno  {
+    border: 1px black solid;
+    
+    
+}
+#batidora, #horno :hover {
+    box-shadow: 0 0.1rem 0.4rem rgba(0,0,0,0.3)
+       
+}
+input {
+    cursor: pointer
+    
+    
+}
+label {
+    font-size: 10px;
+    display: block;
+    margin: 0.01px ;
+
+    
+}
+h6 {
+margin: 0.01px;
+margin-top: 10px;
+border: 1px black solid;
+width: 90px; 
+background-color: white;
+border-radius: 3px;
+}
+button {
+    cursor: pointer;
+}
+#search {
+    width: 80px;
+}
+#horno {
+    transition: all 0.3s ease;
+}
+#horno:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 8px 16pxS rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+#batidora {
+    transition: all 0.3s ease;
+}
+#batidora:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 8px 16pxS rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+button {
+    transition: transform 0.3s ease;
+}
+button:hover {
+    transform: scale(1.1);
+}
+.botones {
+  display: flex;
+  justify-content: flex-start; 
+  gap: 5px;
+  position: absolute;
+  top: 20px;
+  left: 20px; 
+}
+
+.botones button {
+  padding: 3px 9px;
+  font-size: 9px;
+  border: none;
+  border-radius: 6px;
+  background-color: dodgerblue;
+  color: black;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botones button:hover {
+  background-color: blue;
+}
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 300px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.formulario input {
+  padding: 9px 13px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  margin-bottom: 0;
+}
+
+.formulario input:focus {
+  border-color: #42a5f5;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
+  outline: none;
+}
+
+.formulario button {
+  padding: 12px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.formulario button:hover {
+  background-color: #1976d2;
+}
+.logueo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 300px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.logueo input {
+  padding: 9px 13px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  margin-bottom: 0;
+}
+
+.logueo input:focus {
+  border-color: #42a5f5;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
+  outline: none;
+}
+
+
+.logueo button {
+  padding: 12px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logueo button:hover {
+  background-color: #1976d2;
+}
+.help-button {
+  background-color: #007bff;
+  color: white;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.help-button:hover {
+  background-color: #0056b3;
+}
+
+.chat-container {
+  width: 400px;
+  height: 200px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.input-container {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+button:hover {
+  background: #007bff;
+}
+h2 {
+  font-size: 20PX;
+  font-weight: 700;
+  color: #1f1f1f;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.5px;
+  text-transform: none;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: color 0.3s ease;
+}
+
+h2:hover {
+  color: #0077ff; 
+}
