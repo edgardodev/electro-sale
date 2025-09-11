@@ -1,173 +1,121 @@
+/* 🎨 TITULO */
+h1 {
+  text-align: center;
+  font-size: 30px;
+  background: linear-gradient(#1497be, #1c2aec);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  animation: text 5s linear infinite;
+}
 
+@keyframes text {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(90deg); }
+}
 
- 
- h1 {
-    text-align: center;
-    font-size: 30px;
-    background: linear-gradient(#1497be, #1c2aec);
-    color: transparent;
-    background-clip:text ;
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    animation: text 5s linear infinite;
- }
-   
-   @keyframes text{
-        0% {
-            filter: hue-rotate(0deg);
-        }
-        100% {
-            filter: hue-rotate(90deg);
-        }    
-   }
- 
-
+/* 🎨 BODY GENERAL */
 body {
-    border: 5px black solid;
-    border-width: 10px;
-    width: 400px;
-    padding: 30px 15px 50px 15px;
-    margin: 0;
-    background-color: #efefef;
-}
-#ofertas {
-    background-color: red;
-    text-align: center;
-}
-#comprar {
-    background-color: dodgerblue;
-}
-#ofertas, #horno, #batidora, #comprar {
-    transition: all 0.3s ease;
-    display: block;
-    margin: 0 auto;
-    border-radius: 10px;
-    cursor: pointer;
-   
-
+  margin: 0;
+  padding: 20px;
+  background-color: #efefef;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
-#batidora, #horno  {
-    border: 1px black solid;
-    
-    
-}
-#batidora, #horno :hover {
-    box-shadow: 0 0.1rem 0.4rem rgba(0,0,0,0.3)
-       
-}
-input {
-    cursor: pointer
-    
-    
-}
-label {
-    font-size: 10px;
-    display: block;
-    margin: 0.01px ;
-
-    
-}
-h6 {
-margin: 0.01px;
-margin-top: 10px;
-border: 1px black solid;
-width: 90px; 
-background-color: white;
-border-radius: 3px;
-}
+/* 🎨 BOTONES */
 button {
-    cursor: pointer;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  transition: transform 0.3s ease, background 0.3s ease;
 }
-#search {
-    width: 80px;
-}
-#horno {
-    transition: all 0.3s ease;
-}
-#horno:hover {
-    filter: brightness(1.2);
-    box-shadow: 0 8px 16pxS rgba(0, 0, 0, 0.3);
-    transform: scale(1.1);
-}
-#batidora {
-    transition: all 0.3s ease;
-}
-#batidora:hover {
-    filter: brightness(1.2);
-    box-shadow: 0 8px 16pxS rgba(0, 0, 0, 0.3);
-    transform: scale(1.1);
-}
-button {
-    transition: transform 0.3s ease;
-}
+
 button:hover {
-    transform: scale(1.1);
+  transform: scale(1.05);
 }
+
+/* Botones principales */
+#ofertas {
+  background-color: red;
+  color: white;
+}
+
+#comprar {
+  background-color: dodgerblue;
+  color: white;
+}
+
+#search {
+  background-color: dodgerblue;
+  color: white;
+  width: 100px;
+}
+
+/* Contenedor de botones superiores */
 .botones {
   display: flex;
-  justify-content: flex-start; 
-  gap: 5px;
-  position: absolute;
-  top: 20px;
-  left: 20px; 
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .botones button {
-  padding: 3px 9px;
-  font-size: 9px;
-  border: none;
-  border-radius: 6px;
-  background-color: dodgerblue;
-  color: black;
-  cursor: pointer;
-  transition: 0.3s;
+  font-size: 14px;
+  padding: 8px 12px;
 }
 
-.botones button:hover {
-  background-color: blue;
+/* 🎨 IMÁGENES */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 15px auto;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
-.formulario {
+
+img:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  transform: scale(1.05);
+}
+
+/* 🎨 FORMULARIOS */
+.formulario, .logueo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 10px;
   background-color: #ffffff;
-  padding: 24px;
+  padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
+  margin: 0 auto;
   animation: fadeIn 0.8s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.formulario input {
-  padding: 9px 13px;
+.formulario input, .logueo input {
+  padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 14px;
   background-color: #f9f9f9;
   transition: all 0.3s ease;
-  margin-bottom: 0;
 }
 
-.formulario input:focus {
+.formulario input:focus, .logueo input:focus {
   border-color: #42a5f5;
   background-color: #fff;
   box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
   outline: none;
 }
 
-.formulario button {
+.formulario button, .logueo button {
   padding: 12px;
   background-color: #2196f3;
   color: white;
@@ -178,98 +126,59 @@ button:hover {
   transition: background 0.3s ease;
 }
 
-.formulario button:hover {
+.formulario button:hover, .logueo button:hover {
   background-color: #1976d2;
-}
-.logueo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background-color: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 300px;
-  animation: fadeIn 0.8s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.logueo input {
-  padding: 9px 13px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 14px;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
-  margin-bottom: 0;
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.logueo input:focus {
-  border-color: #42a5f5;
-  background-color: #fff;
-  box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
-  outline: none;
-}
-
-
-.logueo button {
-  padding: 12px;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.logueo button:hover {
-  background-color: #1976d2;
-}
+/* 🎨 CHAT BURBUJA */
 .help-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   background-color: #007bff;
   color: white;
-  font-size: 18px;
-  width: 30px;
-  height: 30px;
+  font-size: 20px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   text-align: center;
-  line-height: 30px;
+  line-height: 50px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-decoration: none;
+  z-index: 1000;
 }
 
 .help-button:hover {
   background-color: #0056b3;
 }
 
+/* 🎨 CHAT */
 .chat-container {
-  width: 400px;
-  height: 200px;
+  width: 90%;
+  max-width: 600px;   /* ancho máximo en PC */
+  height: 500px;      /* alto fijo */
   background: white;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  margin: 20px auto;
 }
 
 .messages {
   flex: 1;
-  padding: 20px;
+  padding: 15px;
   overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .input-container {
@@ -277,21 +186,87 @@ button:hover {
   border-top: 1px solid #ccc;
 }
 
-button:hover {
-  background: #007bff;
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
 }
+
+.input-container button {
+  padding: 10px 15px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.input-container button:hover {
+  background: #0056b3;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .chat-container {
+    width: 100%;
+    height: 400px; /* más compacto en móviles */
+  }
+}
+
+/* 🎨 TITULOS */
 h2 {
-  font-size: 20PX;
+  font-size: 20px;
   font-weight: 700;
   color: #1f1f1f;
   margin: 0 0 1rem 0;
-  letter-spacing: -0.5px;
-  text-transform: none;
-  line-height: 1.2;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: color 0.3s ease;
 }
 
 h2:hover {
   color: #0077ff; 
+}
+
+/* 📱 RESPONSIVE PARA CELULARES */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  .botones {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .botones button {
+    width: 100%;
+    max-width: 200px;
+    font-size: 13px;
+  }
+
+  .formulario, .logueo, .chat-container {
+    max-width: 100%;
+  }
+
+  img {
+    max-width: 250px;
+  }
+}
+
+/* Contenedor para imagen + botón */
+.producto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  margin: 20px auto;
+  max-width: 300px;
+}
+
+.producto img {
+  width: 100%;
+  max-width: 220px; /* 📌 tamaño máximo de la imagen */
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }

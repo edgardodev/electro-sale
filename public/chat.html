@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat de Ayuda</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>¿EN QUE PUEDO AYUDAR?</h2>
+  <h2 style="text-align:center; margin-bottom:15px;">¿EN QUÉ PUEDO AYUDAR?</h2>
+
   <div class="chat-container">
     <div class="messages" id="chat"></div>
     <div class="input-container">
@@ -12,3 +16,23 @@
       <button onclick="sendMessage()">Enviar</button>
     </div>
   </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const chat = document.getElementById("chat");
+
+      if (input.value.trim() !== "") {
+        const userMessage = document.createElement("div");
+        userMessage.textContent = "Tú: " + input.value;
+        userMessage.style.marginBottom = "10px";
+        userMessage.style.fontWeight = "bold";
+
+        chat.appendChild(userMessage);
+        chat.scrollTop = chat.scrollHeight;
+        input.value = "";
+      }
+    }
+  </script>
+</body>
+</html>

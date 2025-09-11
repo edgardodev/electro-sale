@@ -1,26 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    
-    <title>electro-sale</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electro-Sale</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <a href="chat.html" class="help-button" title="¿Necesitas ayuda?">
-  <span>💬</span>
-</a>
-    <div class="botones">   
-         <button id="search" onclick="window.location='producto.html'" >SEARCH</button>
-         <button id="crear" onclick="window.location='formulario.html'">CREAR CUENTA</button>
-         <button id="ingresar" onclick="window.location='ingresar.html'">INGRESAR</button>
-    </div>
-    <br>
-    <h1>ELECTRO-SALE</h1>
-    <br>
-    <img id="batidora" src="BATIDORA.jpeg" width="200" />
-    <br>
-    <button id="ofertas" onclick="window.location='producto.html'">ofertas relampago</button>
-    
+
+  <!-- Botón flotante de ayuda -->
+  <a href="chat.html" class="help-button" title="¿Necesitas ayuda?">
+    💬
+  </a>
+
+  <!-- Botones superiores -->
+  <div class="botones">   
+    <button id="search" onclick="window.location='producto.html'">SEARCH</button>
+    <button id="crear" onclick="window.location='formulario.html'">CREAR CUENTA</button>
+    <button id="ingresar" onclick="window.location='ingresar.html'">INGRESAR</button>
+  </div>
+
+  <h1>ELECTRO-SALE</h1>
+
+  <!-- Producto de ejemplo -->
+  <div class="producto">
+    <img id="batidora" src="BATIDORA.jpeg" alt="Batidora">
+    <button id="ofertas" onclick="window.location='producto.html'">Ofertas Relámpago</button>
+  </div>
 
 </body>
 </html>

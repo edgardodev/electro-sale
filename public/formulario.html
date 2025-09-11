@@ -1,45 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    
-    <title>electro-sale</title>
-     <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - Electro-Sale</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>ELECTRO-SALE</h1>
-    <br>
-    <form class="formulario" action="#" novalidate>
-         <input id="nombre" placeholder="NOMBRE" />
-         <br>
-          <input id="apellido" placeholder="APELLIDO" />
-          <br>
-           <input type="text" id="cedula" placeholder="CEDULA" />
-           <br>
-          <input type="password" id="contrasena" placeholder="CONTRASEÑA" />
-            <br>
-            <input type="date" id="fecha_nacimiento" placeholder="FECHA DE NACIMIENTO" />
-            <br>
-             <input id="ciudad" placeholder="CIUDAD" />
-             <br>
-              <input id="direccion_envio" placeholder="DIRECCION DE ENVIO" />
-              <br>
-               <input type="email" id="correo" placeholder="CORREO" />
-               <br>
-               <h6>MEDIO DE PAGO</h6>
-               <BR>
-                <label for="PSE">PSE</label>
-                 <input type="radio" id="PSE" />
-                 <br>
-                 <label for="PSE">PayPal</label>
-                 <input type="radio" id="PayPal" />
-                 <br>
-                 <label for="PSE">CREDIT CARD</label>
-                 <input type="radio" id="CREDIT CARD" />
-                 <br>
-                 <button type="submit">REGISTRARSE</button>
 
-               
-    </form>
-    <script src="script.js"></script>
+  <h1>ELECTRO-SALE</h1>
+
+  <form class="formulario" action="#" novalidate>
+    <input id="nombre" placeholder="NOMBRE" />
+    <input id="apellido" placeholder="APELLIDO" />
+    <input type="text" id="cedula" placeholder="CEDULA" />
+    <input type="password" id="contrasena" placeholder="CONTRASEÑA" />
+    <input type="date" id="fecha_nacimiento" placeholder="FECHA DE NACIMIENTO" />
+    <input id="ciudad" placeholder="CIUDAD" />
+    <input id="direccion_envio" placeholder="DIRECCION DE ENVIO" />
+    <input type="email" id="correo" placeholder="CORREO" />
+
+    <h6>MEDIO DE PAGO</h6>
+    <label><input type="radio" name="pago" value="PSE"> PSE</label>
+    <label><input type="radio" name="pago" value="PayPal"> PayPal</label>
+    <label><input type="radio" name="pago" value="CREDIT CARD"> Credit Card</label>
+
+    <button type="submit">REGISTRARSE</button>
+  </form>
+
+  <script src="script.js"></script>
 </body>
 </html>
