@@ -1,4 +1,4 @@
- const express = require("express");
+const express = require("express");
 const app = express();
 const port = 3000;
 
@@ -6,7 +6,12 @@ const port = 3000;
 app.use(express.json());
 
 // Importar conexión a la base de datos
-const db = require("./db");
+const db = require("./config/db");
+
+// Rutas de autenticación
+const authRoutes = require("./routes/authRoutes");
+console.log("✅ authRoutes cargado:", authRoutes); 
+app.use("/auth", authRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {
