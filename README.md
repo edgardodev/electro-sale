@@ -1,7 +1,7 @@
 # ⚡ Electro-Sale  
 
 <p align="center">
-  <img src="public/logo.png" alt="Electro-Sale Logo" width="200"/>
+  <img src="public/logonew.png" alt="Electro-Sale Logo" width="200"/>
 </p>
 
 ![Logo](https://img.shields.io/badge/Electro--Sale-Ecommerce-blue?style=for-the-badge&logo=shopify)  
