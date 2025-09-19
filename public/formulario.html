@@ -11,17 +11,13 @@
   <h1>ELECTRO-SALE</h1>
 
   <form class="formulario" action="#" novalidate>
-    <input id="nombre" placeholder="NOMBRE" />
-    <input id="apellido" placeholder="APELLIDO" />
-    <input type="text" id="cedula" placeholder="CEDULA" />
-    <input type="password" id="contrasena" placeholder="CONTRASEÑA" />
-    <input type="date" id="fecha_nacimiento" placeholder="FECHA DE NACIMIENTO" />
-    <input id="ciudad" placeholder="CIUDAD" />
-    <input id="direccion_envio" placeholder="DIRECCION DE ENVIO" />
-    <input type="email" id="correo" placeholder="CORREO" />
+    <input id="nombre" placeholder="NOMBRE" required />
+    <input type="email" id="correo" placeholder="CORREO" required />
+    <input id="direccion" placeholder="DIRECCIÓN" required />
+    <input type="password" id="password" placeholder="CONTRASEÑA" required />
 
     <h6>MEDIO DE PAGO</h6>
-    <label><input type="radio" name="pago" value="PSE"> PSE</label>
+    <label><input type="radio" name="pago" value="PSE" required> PSE</label>
     <label><input type="radio" name="pago" value="PayPal"> PayPal</label>
     <label><input type="radio" name="pago" value="CREDIT CARD"> Credit Card</label>
 

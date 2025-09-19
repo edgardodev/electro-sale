@@ -1,6 +1,10 @@
- const db = require("../config/db");
+const db = require("../config/db");
+const jwt = require("jsonwebtoken");
 
-// Registro de nuevo usuario
+// ⚠️ En producción usa un archivo .env
+const JWT_SECRET = "mi_secreto_super_seguro";
+
+// 📌 Registrar nuevo cliente
 exports.registerUser = (req, res) => {
   console.log("Datos recibidos en req.body:", req.body);
 
@@ -16,13 +20,17 @@ exports.registerUser = (req, res) => {
       console.error("❌ Error al registrar:", err);
       return res.status(500).json({ message: "Error en el servidor" });
     }
-    res.status(201).json({ message: "✅ cliente registrado con éxito" });
+    res.status(201).json({ message: "✅ Cliente registrado con éxito" });
   });
 };
 
-// Login de usuario
+// 📌 Login con JWT
 exports.loginUser = (req, res) => {
   const { correo, password } = req.body;
+
+  if (!correo || !password) {
+    return res.status(400).json({ message: "Correo y contraseña son requeridos" });
+  }
 
   const query = "SELECT * FROM cliente WHERE correo = ? AND password = ?";
   db.query(query, [correo, password], (err, results) => {
@@ -32,9 +40,26 @@ exports.loginUser = (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(401).json({ message: "Credenciales incorrectas" });
+      return res.status(401).json({ message: "❌ Credenciales incorrectas" });
     }
 
-    res.status(200).json({ message: "✅ Login exitoso", user: results[0] });
+    const user = results[0];
+
+    // 🔑 Generar token válido por 1 hora
+    const token = jwt.sign(
+      { id: user.idcliente, correo: user.correo },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: "✅ Login exitoso",
+      token,
+      user: {
+        id: user.idcliente,
+        nombre: user.nombre,
+        correo: user.correo,
+      },
+    });
   });
 };

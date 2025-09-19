@@ -47,13 +47,13 @@ button:hover {
   background-color: dodgerblue;
   color: white;
 }
-
+/*
 #search {
   background-color: dodgerblue;
   color: white;
   width: 100px;
 }
-
+*/
 /* Contenedor de botones superiores */
 .botones {
   display: flex;

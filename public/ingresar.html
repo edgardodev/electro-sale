@@ -10,13 +10,14 @@
 
   <h1>ELECTRO-SALE</h1>
 
-  <form class="logueo" onsubmit="return login(event)">
-    <input id="cedula" placeholder="CÉDULA" />
-    <input type="password" id="contrasena" placeholder="PASSWORD" />
+  <form class="logueo" id="loginForm">
+    <input type="email" id="correo" placeholder="CORREO" required />
+    <input type="password" id="password" placeholder="PASSWORD" required />
     <button type="submit">SIGN IN</button>
     <p id="error" style="color: red;"></p>
   </form>
 
-  <script src="script.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>
+

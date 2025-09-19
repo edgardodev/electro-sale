@@ -1,31 +1,25 @@
-const express = require("express");
+ const express = require("express");
+const cors = require("cors");   // 👈 importar cors
 const app = express();
 const port = 3000;
 
-// Para que el backend acepte JSON
 app.use(express.json());
+app.use(cors());  // 👈 habilitar CORS para permitir peticiones desde 127.0.0.1:5500
 
-// Importar conexión a la base de datos
+// Importar conexión a la base de datos (importante que se use dentro de los controladores)
 const db = require("./config/db");
 
-// Rutas de autenticación
+// Importar rutas
 const authRoutes = require("./routes/authRoutes");
-console.log("✅ authRoutes cargado:", authRoutes); 
-app.use("/auth", authRoutes);
+const clienteRoutes = require("./routes/clienteRoutes");
 
-// Ruta de prueba
+// Usar rutas
+app.use("/auth", authRoutes);       
+app.use("/clientes", clienteRoutes); 
+
+// Ruta de prueba general
 app.get("/", (req, res) => {
-  res.send("¡Servidor funcionando con Express!");
-});
-
-// Ruta para ver todos los clientes
-app.get("/cliente", (req, res) => {
-  db.query("SELECT * FROM cliente", (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
+  res.send("¡Servidor funcionando con Express! 🚀");
 });
 
 // Iniciar servidor

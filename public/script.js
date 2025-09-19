@@ -1,46 +1,50 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.formulario'); 
+  const form = document.querySelector('.formulario');
 
-    if (!form) {
-        console.error("No se encontró el formulario (.formulario). Verifica el HTML y el nombre del archivo script.");
-        return;
+  if (!form) {
+    console.error("❌ No se encontró el formulario (.formulario)");
+    return;
+  }
+
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const direccion = document.getElementById("direccion").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const metodo_pago = document.querySelector('input[name="pago"]:checked')?.value || "";
+
+    if (!nombre || !correo || !direccion || !password || !metodo_pago) {
+      alert("⚠️ Favor llenar todos los campos.");
+      return;
     }
 
-    form.addEventListener('submit', function (event) {
-        const nombre = document.getElementById("nombre").value.trim();
-        const email = document.getElementById("correo").value.trim();
-        const apellido = document.getElementById("apellido").value.trim();
-        const cedula = document.getElementById("cedula").value.trim();
-        const contrasena = document.getElementById("contrasena").value.trim();
-        const fechaNacimiento = document.getElementById("fecha_nacimiento").value.trim();
-        const ciudad = document.getElementById("ciudad").value.trim();
-        const direccionEnvio = document.getElementById("direccion_envio").value.trim();
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+      alert('⚠️ Ingrese un correo válido.');
+      return;
+    }
 
-        if (!nombre || !email || !apellido || !cedula || !contrasena || !fechaNacimiento || !ciudad || !direccionEnvio) {
-            alert("Favor llenar todos los campos.");
-            event.preventDefault();
-            return;
-        }
+    try {
+      const response = await fetch("http://localhost:3000/clientes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, correo, direccion, metodo_pago, password })
+      });
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert('Ingrese un correo válido.');
-            event.preventDefault();
-            return;
-        }
+      const result = await response.json();
 
-        alert("Usuario creado correctamente");
-    });
+      if (response.ok) {
+        alert("✅ Usuario creado correctamente");
+        console.log(result);
+      } else {
+        alert("❌ Error: " + (result.message || "No se pudo registrar"));
+      }
+    } catch (error) {
+      console.error("❌ Error al registrar:", error);
+      alert("Error de conexión con el servidor");
+    }
+  });
 });
-function login(event) {
-    event.preventDefault(); 
-    const cedulaCorrecta = "32645219";
-    const contrasenaCorrecta = "sena123";
-    let cedula = document.getElementById("cedula").value.trim();
-    let contrasena = document.getElementById("CONTRASENA").value.trim();
-    if (cedula === cedulaCorrecta && contrasena === contrasenaCorrecta) {
-        window.location.href = "producto.html";
-    } else {
-        document.getElementById("error").textContent = "Cédula o contraseña incorrectos";
-    }
-}
