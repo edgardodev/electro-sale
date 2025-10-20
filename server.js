@@ -1,28 +1,41 @@
- const express = require("express");
-const cors = require("cors");   // 👈 importar cors
+const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = 3000;
 
+// Middleware
 app.use(express.json());
-app.use(cors());  // 👈 habilitar CORS para permitir peticiones desde 127.0.0.1:5500
+app.use(cors()); // para combinar puertos
 
-// Importar conexión a la base de datos (importante que se use dentro de los controladores)
-const db = require("./config/db");
+//  Importar middlewares y rutas
+const authMiddleware = require("./middlewares/authMiddleware");
 
-// Importar rutas
+// Rutas 
 const authRoutes = require("./routes/authRoutes");
 const clienteRoutes = require("./routes/clienteRoutes");
+const productoRoutes = require("./routes/productoRoutes");
 
-// Usar rutas
-app.use("/auth", authRoutes);       
-app.use("/clientes", clienteRoutes); 
+// rutas de pedidos
+const pedidoRoutes = require("./routes/pedidoRoutes");
+const detallePedidoRoutes = require("./routes/detallePedidoRoutes");
+
+// 🛣️ Usar rutas
+
+// Rutas de autenticación y módulos 
+app.use("/auth", authRoutes);
+app.use("/api/clientes", clienteRoutes);
+app.use("/api/productos", productoRoutes);
+
+// 🔥 Rutas nuevas protegidas con token
+app.use("/api/pedidos", authMiddleware, pedidoRoutes);
+app.use("/api/detalle-pedidos", authMiddleware, detallePedidoRoutes);
 
 // Ruta de prueba general
 app.get("/", (req, res) => {
-  res.send("¡Servidor funcionando con Express! 🚀");
+  res.send("🚀 Servidor Electro Sale funcionando correctamente");
 });
 
 // Iniciar servidor
 app.listen(port, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
+  console.log(`✅ Servidor corriendo en: http://localhost:${port}`);
 });
