@@ -7,12 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Obtener datos del usuario logueado desde el backend
   fetch("http://localhost:3000/auth/perfil", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}` // 👈 token en header
+      "Authorization": `Bearer ${token}` 
     }
   })
     .then(res => {
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "login.html";
     });
 
-  // Acción de comprar
   document.getElementById("comprar").addEventListener("click", () => {
     alert("✅ Compra realizada con éxito (aquí conectarás con pedidos en el backend)");
   });

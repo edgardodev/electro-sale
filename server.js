@@ -5,37 +5,38 @@ const port = 3000;
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // para combinar puertos
 
-//  Importar middlewares y rutas
+// ✅ Permitir conexión desde tu frontend (Live Server)
+app.use(cors({
+  origin: "http://127.0.0.1:5500",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+// Importar middlewares y rutas
 const authMiddleware = require("./middlewares/authMiddleware");
 
-// Rutas 
+// Importar rutas
 const authRoutes = require("./routes/authRoutes");
 const clienteRoutes = require("./routes/clienteRoutes");
 const productoRoutes = require("./routes/productoRoutes");
-
-// rutas de pedidos
 const pedidoRoutes = require("./routes/pedidoRoutes");
 const detallePedidoRoutes = require("./routes/detallePedidoRoutes");
 
-// 🛣️ Usar rutas
-
-// Rutas de autenticación y módulos 
+// Usar rutas
 app.use("/auth", authRoutes);
 app.use("/api/clientes", clienteRoutes);
 app.use("/api/productos", productoRoutes);
-
-// 🔥 Rutas nuevas protegidas con token
 app.use("/api/pedidos", authMiddleware, pedidoRoutes);
 app.use("/api/detalle-pedidos", authMiddleware, detallePedidoRoutes);
 
-// Ruta de prueba general
+// Ruta de prueba
 app.get("/", (req, res) => {
   res.send("🚀 Servidor Electro Sale funcionando correctamente");
 });
 
 // Iniciar servidor
-app.listen(port, () => {
-  console.log(`✅ Servidor corriendo en: http://localhost:${port}`);
+app.listen(port, "127.0.0.1", () => {
+  console.log(`✅ Servidor corriendo en: http://127.0.0.1:${port}`);
 });

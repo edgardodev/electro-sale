@@ -50,8 +50,19 @@ exports.actualizarProducto = (req, res) => {
 exports.eliminarProducto = (req, res) => {
   const { id } = req.params;
   const query = "DELETE FROM producto WHERE id_producto = ?";
+
   db.query(query, [id], (err, result) => {
-    if (err) return res.status(500).json({ error: err });
-    res.json({ mensaje: "Producto eliminado con éxito" });
+    if (err) {
+      console.error("❌ Error al eliminar producto:", err);
+      return res.status(500).json({ error: err });
+    }
+
+    console.log("🧩 Resultado de DELETE:", result);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensaje: "Producto no encontrado o ya eliminado" });
+    }
+
+    res.json({ mensaje: "✅ Producto eliminado con éxito" });
   });
 };

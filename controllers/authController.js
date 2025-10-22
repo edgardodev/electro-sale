@@ -1,7 +1,6 @@
 const db = require("../config/db");
 const jwt = require("jsonwebtoken");
 
-// ⚠️ En producción usa un archivo .env
 const JWT_SECRET = "mi_secreto_super_seguro";
 
 // 📌 Registrar nuevo cliente
@@ -45,7 +44,6 @@ exports.loginUser = (req, res) => {
 
     const user = results[0];
 
-    // 🔑 Generar token válido por 1 hora
     const token = jwt.sign(
       { id: user.idcliente, correo: user.correo },
       JWT_SECRET,
