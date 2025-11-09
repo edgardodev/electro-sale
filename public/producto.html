@@ -1,21 +1,101 @@
+<!-- public/producto.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Producto - Electro-Sale</title>
+  <title>Catálogo - Electro-Sale</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="catalog-body">
 
-  <h1>ELECTRO-SALE</h1>
+  <a href="chat.html" class="help-button" title="¿Necesitas ayuda?">
+    💬
+  </a>
 
-  <h2>Bienvenido, <span id="usuario"></span> 👋</h2>
+  <div class="page-background"></div>
 
-  <div class="producto">
-    <img id="horno" src="horno.jpg" alt="Horno" width="300">
-    <p>🔥 Horno eléctrico de última generación</p>
-    <button id="comprar">¡Comprar!</button>
+  <header class="catalog-header">
+    <a class="brand-pill" href="index.html">
+      <span class="brand-pill__primary">Electro</span>
+      <span class="brand-pill__accent">Sale</span>
+    </a>
+    <div class="catalog-search">
+      <input type="search" id="searchInput" placeholder="Buscar electrodomésticos, marcas o categorías" aria-label="Buscar productos" />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 105.25 5.25a7.5 7.5 0 0011.4 11.4z" />
+      </svg>
+    </div>
+    <div class="catalog-actions">
+      <span class="catalog-greeting" id="bienvenida">Hola, <strong id="usuario">Cliente</strong> · <span id="rolUsuario">visitante</span> 👋</span>
+      <button class="ghost-button" id="adminPanel" style="display:none;">Panel administrador</button>
+      <button class="outline-button" id="logout">Salir</button>
+    </div>
+  </header>
+
+  <main class="catalog-main">
+    <section class="catalog-hero">
+      <div class="catalog-hero__copy">
+        <span class="hero-badge">Explora el marketplace</span>
+        <h1>Catálogo destacado</h1>
+        <p>Filtra por categorías, descubre ofertas dinámicas y añade tus favoritos al carrito con envíos express a todo el país.</p>
+        <div class="catalog-quick-filters" id="quickFilters">
+          <button type="button" class="category-chip" data-filter="cocina">Cocina inteligente</button>
+          <button type="button" class="category-chip" data-filter="lavanderia">Lavandería</button>
+          <button type="button" class="category-chip" data-filter="limpieza">Limpieza</button>
+          <button type="button" class="category-chip" data-filter="audio">Audio &amp; Video</button>
+          <button type="button" class="category-chip" data-filter="clima">Climatización</button>
+        </div>
+      </div>
+      <div class="catalog-hero__card">
+        <div class="hero-card__tag">Recomendado para ti</div>
+        <img src="BATIDORA.jpeg" alt="Producto destacado" />
+        <div class="hero-card__body">
+          <h2>Freidora AirMax Digital</h2>
+          <p>Capacidad XL, 12 programas inteligentes y monitoreo desde tu móvil.</p>
+          <div class="hero-card__price">
+            <span class="price-current">$399.900</span>
+            <span class="price-old">$529.900</span>
+          </div>
+          <button class="secondary-button" type="button">Ver más ofertas</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog-meta">
+      <div class="meta-card">
+        <h3>Envíos garantizados</h3>
+        <p>Seguimiento en tiempo real y cobertura nacional con aliados logísticos premium.</p>
+      </div>
+      <div class="meta-card">
+        <h3>Compras protegidas</h3>
+        <p>Pagos 100% seguros, devoluciones fáciles y soporte humano 24/7.</p>
+      </div>
+      <div class="meta-card">
+        <h3>Ofertas personalizadas</h3>
+        <p>Usamos tu historial para recomendarte los mejores combos y descuentos.</p>
+      </div>
+    </section>
+
+    <section class="catalog-products" aria-live="polite">
+      <div class="catalog-products__header">
+        <h2>Productos disponibles</h2>
+        <span class="catalog-products__count" id="productCount">0 resultados</span>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="empty-state" id="emptyState" role="status" aria-live="polite" hidden>
+        😔 No encontramos productos para tu búsqueda.
+      </div>
+    </section>
+  </main>
+
+  <div class="loading-overlay hidden" id="catalogLoading" aria-live="polite" aria-busy="true">
+    <div class="loading-spinner" role="status" aria-hidden="true"></div>
+    <p>Actualizando el catálogo...</p>
   </div>
 
+  <script src="js/ui-helpers.js"></script>
   <script src="producto.js"></script>
+</body>
+</html>
+

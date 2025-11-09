@@ -1,3 +1,4 @@
+<!-- public/ingresar.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,18 +7,53 @@
   <title>Ingresar - Electro-Sale</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="auth-body">
 
-  <h1>ELECTRO-SALE</h1>
+  <div class="page-background"></div>
 
-  <form class="logueo" id="loginForm">
-    <input type="email" id="correo" placeholder="CORREO" required />
-    <input type="password" id="password" placeholder="PASSWORD" required />
-    <button type="submit">SIGN IN</button>
-    <p id="error" style="color: red;"></p>
-  </form>
+  <header class="auth-header">
+    <a class="brand-pill" href="index.html">
+      <span class="brand-pill__primary">Electro</span>
+      <span class="brand-pill__accent">Sale</span>
+    </a>
+    <a class="ghost-button" href="formulario.html">Crear cuenta</a>
+  </header>
+
+  <main class="auth-container">
+    <section class="auth-card">
+      <h1>Bienvenido de nuevo</h1>
+      <p class="auth-subtitle">Ingresa tus credenciales para acceder a tu panel personal.</p>
+
+      <form class="logueo" id="loginForm">
+        <div class="form-field">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" placeholder="usuario@email.com" required />
+        </div>
+
+        <div class="form-field">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="********" required />
+        </div>
+
+        <div class="form-field">
+          <label for="role">Tipo de usuario</label>
+          <select id="role" required>
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+
+        <button type="submit" class="primary-button">Iniciar sesión</button>
+        <p id="error" class="form-error" role="alert"></p>
+      </form>
+    </section>
+  </main>
+
+  <div class="loading-overlay hidden" id="loginLoading" aria-live="polite" aria-busy="true">
+    <div class="loading-spinner" role="status" aria-hidden="true"></div>
+    <p>Procesando tu acceso...</p>
+  </div>
 
   <script src="login.js"></script>
 </body>
 </html>
-

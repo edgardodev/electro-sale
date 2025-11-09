@@ -1,3 +1,4 @@
+<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,18 +13,125 @@
     💬
   </a>
 
-  <div class="botones">   
-    <button id="search" onclick="window.location='producto.html'">SEARCH</button>
-    <button id="crear" onclick="window.location='formulario.html'">CREAR CUENTA</button>
-    <button id="ingresar" onclick="window.location='ingresar.html'">INGRESAR</button>
-  </div>
+  <div class="page-background"></div>
 
-  <h1>ELECTRO-SALE</h1>
+  <header class="main-header">
+    <a class="brand-pill" href="index.html">
+      <span class="brand-pill__primary">Electro</span>
+      <span class="brand-pill__accent">Sale</span>
+    </a>
+    <div class="header-actions">
+      <button class="ghost-button" onclick="window.location='producto.html'">Buscar</button>
+      <button class="ghost-button" onclick="window.location='formulario.html'">Crear cuenta</button>
+      <button class="primary-button" onclick="window.location='ingresar.html'">Ingresar</button>
+    </div>
+  </header>
 
-  <div class="producto">
-    <img id="batidora" src="BATIDORA.jpeg" alt="Batidora">
-    <button id="ofertas" onclick="window.location='producto.html'">Ofertas Relámpago</button>
-  </div>
+  <main class="landing">
+    <section class="hero">
+      <div class="hero-text">
+        <span class="hero-badge">Descubre lo último en electrodomésticos</span>
+        <h1>ELECTRO-SALE</h1>
+        <p>Renueva tu hogar con ofertas relámpago, envíos rápidos y la garantía de las mejores marcas del mercado. Todo lo que necesitas, en un solo lugar.</p>
+        <div class="hero-cta">
+          <button class="primary-button" onclick="window.location='producto.html'">Ver catálogo</button>
+          <button class="outline-button" onclick="window.location='formulario.html'">Unirme ahora</button>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <strong>+5K</strong>
+            <span>Productos disponibles</span>
+          </div>
+          <div>
+            <strong>48h</strong>
+            <span>Envíos express</span>
+          </div>
+          <div>
+            <strong>4.9★</strong>
+            <span>Clientes satisfechos</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card__tag">Oferta Flash</div>
+        <img src="BATIDORA.jpeg" alt="Batidora portátil" />
+        <div class="hero-card__body">
+          <h2>Batidora SmartMix Pro</h2>
+          <p>Compacta, potente y lista para cualquier receta. Disponible solo por tiempo limitado.</p>
+          <div class="hero-card__price">
+            <span class="price-current">$49.990</span>
+            <span class="price-old">$79.990</span>
+          </div>
+          <button class="secondary-button" onclick="window.location='producto.html'">Aprovechar oferta</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories">
+      <h3>Compra por categoría</h3>
+      <div class="category-grid">
+        <button class="category-chip">Cocina inteligente</button>
+        <button class="category-chip">Refrigeración</button>
+        <button class="category-chip">Lavandería</button>
+        <button class="category-chip">Limpieza</button>
+        <button class="category-chip">Audio &amp; Video</button>
+        <button class="category-chip">Climatización</button>
+      </div>
+    </section>
+
+    <section class="highlights">
+      <article class="highlight-card">
+        <h4>Entrega en 48 horas</h4>
+        <p>Despachos express en las principales ciudades y seguimiento en tiempo real desde tu panel.</p>
+      </article>
+      <article class="highlight-card">
+        <h4>Pagos 100% seguros</h4>
+        <p>Protegemos cada compra con verificación inteligente y soporte humano 24/7.</p>
+      </article>
+      <article class="highlight-card">
+        <h4>Garantía extendida</h4>
+        <p>Amplía la protección de tus electrodomésticos favoritos con solo un clic.</p>
+      </article>
+    </section>
+
+    <section class="trending">
+      <div class="trending-header">
+        <h3>Top ofertas de la semana</h3>
+        <button class="ghost-button" onclick="window.location='producto.html'">Ver todo</button>
+      </div>
+      <div class="trending-grid">
+        <article class="trend-card">
+          <span class="trend-tag">-30%</span>
+          <h4>Robot aspirador ZenClean</h4>
+          <p>Controla tu limpieza desde el móvil con mapeo inteligente.</p>
+        </article>
+        <article class="trend-card">
+          <span class="trend-tag">-25%</span>
+          <h4>Smart TV QLED 55"</h4>
+          <p>Resolución 4K HDR, apps integradas y sonido envolvente.</p>
+        </article>
+        <article class="trend-card">
+          <span class="trend-tag">-40%</span>
+          <h4>Lavadora EcoWash 12kg</h4>
+          <p>Máxima eficiencia energética con programas inteligentes.</p>
+        </article>
+        <article class="trend-card">
+          <span class="trend-tag">-18%</span>
+          <h4>Refrigerador TwinCool</h4>
+          <p>Doble zona de enfriamiento y filtros antibacteriales.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <p>© 2024 Electro-Sale · Tecnología para tu hogar</p>
+    <div class="footer-links">
+      <a href="producto.html">Catálogo</a>
+      <a href="formulario.html">Regístrate</a>
+      <a href="chat.html">Soporte</a>
+    </div>
+  </footer>
 
 </body>
 </html>
