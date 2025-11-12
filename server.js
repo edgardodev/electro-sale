@@ -23,6 +23,7 @@ const clienteRoutes = require("./routes/clienteRoutes");
 const productoRoutes = require("./routes/productoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
 const detallePedidoRoutes = require("./routes/detallePedidoRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 // Usar rutas
 app.use("/auth", authRoutes);
@@ -30,6 +31,7 @@ app.use("/api/clientes", clienteRoutes);
 app.use("/api/productos", productoRoutes);
 app.use("/api/pedidos", authMiddleware, pedidoRoutes);
 app.use("/api/detalle-pedidos", authMiddleware, detallePedidoRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {

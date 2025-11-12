@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Administrativo - Electro-Sale</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard-body">
+  <!-- Fondo decorativo reutilizado del resto de la aplicación -->
+  <div class="page-background"></div>
+
+  <!-- Barra lateral fija con navegación contextual -->
+  <aside class="dashboard-sidebar">
+    <a class="brand-pill" href="index.html">
+      <span class="brand-pill__primary">Electro</span>
+      <span class="brand-pill__accent">Sale</span>
+    </a>
+    <nav class="dashboard-nav" aria-label="Navegación del panel">
+      <a class="dashboard-nav__link active" href="#overview">Resumen</a>
+      <a class="dashboard-nav__link" href="#pricing">Precios</a>
+      <a class="dashboard-nav__link" href="#inventory">Inventario</a>
+      <a class="dashboard-nav__link" href="#stock">Stock</a>
+      <a class="dashboard-nav__link" href="#orders">Órdenes</a>
+    </nav>
+    <div class="dashboard-sidebar__footer">
+      <p class="sidebar-subtitle">Sesión activa</p>
+      <div class="user-chip">
+        <span class="user-chip__avatar" aria-hidden="true">AD</span>
+        <div>
+          <strong>Administrador</strong>
+          <p>admin@electro-sale.com</p>
+        </div>
+      </div>
+      <a class="ghost-button" href="ingresar.html">Cerrar sesión</a>
+    </div>
+  </aside>
+
+  <!-- Contenido central del panel administrativo -->
+  <main class="dashboard-main" id="overview">
+    <!-- Encabezado con acciones rápidas -->
+    <header class="dashboard-header">
+      <div>
+        <p class="eyebrow">Panel Administrativo</p>
+        <h1>Gestiona Electro-Sale con confianza</h1>
+        <p class="dashboard-subtitle">Controla precios, inventario, stock y órdenes en un solo lugar.</p>
+      </div>
+      <div class="dashboard-header__actions">
+        <button class="ghost-button" type="button">Modo lectura</button>
+        <button class="primary-button" type="button" data-async="true" data-loading-message="Preparando formulario de creación…">Crear producto</button>
+      </div>
+    </header>
+
+    <!-- Resumen con métricas claves -->
+    <section class="dashboard-section dashboard-section--grid" aria-labelledby="overview-title">
+      <div class="section-heading">
+        <h2 id="overview-title">Resumen de indicadores</h2>
+        <p>Métricas clave actualizadas al momento.</p>
+      </div>
+      <div class="metric-grid">
+        <article class="metric-card" aria-label="Productos activos">
+          <span class="metric-icon" aria-hidden="true">📦</span>
+          <p class="metric-title">Productos activos</p>
+          <p class="metric-value" id="metricProducts">—</p>
+          <p class="metric-trend positive" id="metricProductsTrend">Sincronizando catálogo…</p>
+        </article>
+        <article class="metric-card" aria-label="Inventario disponible">
+          <span class="metric-icon" aria-hidden="true">📊</span>
+          <p class="metric-title">Inventario disponible</p>
+          <p class="metric-value" id="metricInventory">—</p>
+          <p class="metric-trend" id="metricInventoryTrend">Esperando datos del inventario…</p>
+        </article>
+        <article class="metric-card" aria-label="Órdenes pendientes">
+          <span class="metric-icon" aria-hidden="true">🧾</span>
+          <p class="metric-title">Órdenes pendientes</p>
+          <p class="metric-value" id="metricOrders">—</p>
+          <p class="metric-trend negative" id="metricOrdersTrend">Sin datos de pedidos.</p>
+        </article>
+        <article class="metric-card" aria-label="Nivel de stock crítico">
+          <span class="metric-icon" aria-hidden="true">⚠️</span>
+          <p class="metric-title">Nivel de stock crítico</p>
+          <p class="metric-value" id="metricCritical">—</p>
+          <p class="metric-trend" id="metricCriticalTrend">Sincroniza el stock para ver alertas.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Gestión de precios -->
+    <section class="dashboard-section" id="pricing" aria-labelledby="pricing-title">
+      <div class="section-heading">
+        <h2 id="pricing-title">Actualizar precios</h2>
+        <p>Modifica precios de productos de forma segura y controlada.</p>
+      </div>
+      <form id="pricingForm" class="panel-card form-grid js-async-form" aria-describedby="pricing-help">
+        <div class="form-field">
+          <label for="product-select">Seleccionar producto</label>
+          <select id="product-select" required>
+            <option value="">Selecciona un producto del catálogo</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="current-price">Precio actual</label>
+          <input id="current-price" type="text" value="—" readonly />
+        </div>
+        <div class="form-field">
+          <label for="new-price">Nuevo precio</label>
+          <input id="new-price" type="number" min="0" step="0.01" placeholder="Ej: 179.990" required />
+        </div>
+        <div class="form-field">
+          <label for="price-effective">Fecha de vigencia</label>
+          <input id="price-effective" type="date" required />
+        </div>
+        <div class="form-field form-field--full">
+          <label for="price-notes">Notas internas</label>
+          <textarea id="price-notes" rows="3" placeholder="Motivo del ajuste o referencia de campaña"></textarea>
+        </div>
+        <!-- Acciones disponibles para el formulario de precios -->
+        <div class="form-actions">
+          <button type="reset" class="secondary-button" data-async="false">Cancelar</button>
+          <button type="submit" class="primary-button" data-async="true" data-loading-message="Actualizando precio…">Guardar cambios</button>
+        </div>
+        <p id="pricingFeedback" class="form-feedback" aria-live="polite"></p>
+      </form>
+      <p id="pricing-help" class="section-footnote">Todos los cambios quedan registrados con fecha y usuario responsable.</p>
+    </section>
+
+    <!-- Carga de inventario nuevo -->
+    <section class="dashboard-section" id="inventory" aria-labelledby="inventory-title">
+      <div class="section-heading">
+        <h2 id="inventory-title">Cargar inventario</h2>
+        <p>Ingresa nuevas unidades o lotes completos al sistema.</p>
+      </div>
+      <form id="inventoryForm" class="panel-card form-grid js-async-form">
+        <div class="form-field">
+          <label for="inventory-product">Producto</label>
+          <select id="inventory-product" required>
+            <option value="">Selecciona un producto existente</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="inventory-current">Stock actual</label>
+          <input id="inventory-current" type="text" value="—" readonly />
+        </div>
+        <div class="form-field">
+          <label for="inventory-quantity">Cantidad a ingresar</label>
+          <input id="inventory-quantity" type="number" min="1" step="1" placeholder="Ej: 50" required />
+        </div>
+        <div class="form-field">
+          <label for="inventory-date">Fecha de ingreso</label>
+          <input id="inventory-date" type="date" required />
+        </div>
+        <div class="form-field">
+          <label for="inventory-supplier">Proveedor (opcional)</label>
+          <input id="inventory-supplier" type="text" placeholder="Proveedor asociado" />
+        </div>
+        <div class="form-field form-field--full">
+          <label for="inventory-notes">Notas</label>
+          <textarea id="inventory-notes" rows="3" placeholder="Detalle adicional o número de factura"></textarea>
+        </div>
+        <!-- Acciones disponibles para el formulario de inventario -->
+        <div class="form-actions">
+          <button type="reset" class="secondary-button" data-async="false">Limpiar</button>
+          <button type="submit" class="primary-button" data-async="true" data-loading-message="Registrando inventario…">Registrar ingreso</button>
+        </div>
+        <p id="inventoryFeedback" class="form-feedback" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Seguimiento del stock actual -->
+    <section class="dashboard-section" id="stock" aria-labelledby="stock-title">
+      <div class="section-heading">
+        <h2 id="stock-title">Revisión de stock</h2>
+        <p>Monitorea disponibilidad y detecta alertas a tiempo.</p>
+      </div>
+      <div class="panel-card">
+        <!-- Barra de herramientas con acciones de stock -->
+        <div class="table-toolbar">
+          <div class="search-group">
+            <label class="visually-hidden" for="stock-search">Buscar producto</label>
+            <input id="stock-search" type="search" placeholder="Buscar producto o categoría" />
+          </div>
+          <div class="toolbar-actions">
+            <button class="ghost-button" type="button" data-async="true" data-loading-message="Generando exportación…">Exportar</button>
+            <button class="secondary-button" type="button" data-async="true" data-loading-message="Creando alerta de stock…">Generar alerta</button>
+          </div>
+        </div>
+        <div class="table-responsive" role="region" aria-live="polite">
+          <table class="dashboard-table">
+            <caption class="visually-hidden">Detalle de productos y niveles de stock</caption>
+            <thead>
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Stock actual</th>
+                <th scope="col">Stock mínimo</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Último movimiento</th>
+              </tr>
+            </thead>
+            <tbody id="stockTableBody">
+              <tr class="stock-empty-row">
+                <td colspan="5">Cargando inventario disponible…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gestión de órdenes de compra -->
+    <section class="dashboard-section" id="orders" aria-labelledby="orders-title">
+      <div class="section-heading">
+        <h2 id="orders-title">Órdenes de compra</h2>
+        <p>Haz seguimiento de pedidos y gestiona su estado.</p>
+      </div>
+      <div class="panel-card">
+        <!-- Barra de herramientas con filtros y accesos rápidos -->
+        <div class="table-toolbar">
+          <div class="filter-group">
+            <label for="order-status">Estado</label>
+            <select id="order-status">
+              <option value="todas">Todas</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="preparacion">En preparación</option>
+              <option value="enviada">Enviada</option>
+              <option value="completada">Completada</option>
+            </select>
+          </div>
+          <div class="orders-toolbar-actions">
+            <span id="ordersCount" class="orders-count-pill" aria-live="polite">0 órdenes</span>
+            <button class="ghost-button" type="button" data-async="true" data-loading-message="Consultando historial…">Ver historial</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="dashboard-table">
+            <caption class="visually-hidden">Listado de órdenes recientes con su estado actual</caption>
+            <thead>
+              <tr>
+                <th scope="col">Orden</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr class="orders-empty-row">
+                <td colspan="6">Cargando órdenes recientes…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="ordersFeedback" class="section-footnote">Sincroniza esta sección para ver los pedidos reales registrados en la base de datos.</p>
+      </div>
+    </section>
+  </main>
+  <!-- Indicador de carga global para cualquier interacción con el backend -->
+  <div class="dashboard-loading" role="status" aria-live="assertive" aria-hidden="true">
+    <div class="dashboard-loading__content">
+      <span class="dashboard-loading__spinner" aria-hidden="true"></span>
+      <p class="dashboard-loading__message">Sincronizando con el servidor…</p>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
