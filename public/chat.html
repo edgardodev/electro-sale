@@ -3,36 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat de Ayuda</title>
+  <title>Soporte en línea - Electro-Sale</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h2 style="text-align:center; margin-bottom:15px;">¿EN QUÉ PUEDO AYUDAR?</h2>
+<body class="chat-body">
+  <div class="page-background"></div>
 
-  <div class="chat-container">
-    <div class="messages" id="chat"></div>
-    <div class="input-container">
-      <input type="text" id="userInput" placeholder="Escribe tu mensaje...">
-      <button onclick="sendMessage()">Enviar</button>
-    </div>
-  </div>
+  <header class="auth-header chat-header">
+    <a class="brand-pill" href="index.html">
+      <span class="brand-pill__primary">Electro</span>
+      <span class="brand-pill__accent">Sale</span>
+    </a>
+    <a class="ghost-button" href="index.html">Volver a la tienda</a>
+  </header>
+
+  <main class="chat-main">
+    <section class="chat-intro">
+      <span class="hero-badge">Chat directo con administración</span>
+      <h1 id="chatHeroTitle">Habla con <span data-admin-name>la administración</span></h1>
+      <p>
+        Envía tu mensaje y la persona administradora de Electro-Sale responderá personalmente
+        desde su panel interno. No hay bots de por medio: estás escribiendo directamente con
+        quien gestiona pedidos, inventario y postventa.
+      </p>
+
+      <div class="chat-intro__grid">
+        <article class="chat-intro__card">
+          <h2>Horarios de respuesta</h2>
+          <p>Lunes a sábado de 9:00 a.m. a 8:00 p.m. (GMT-5). Fuera de este horario recibes confirmación y te contesta al abrir la tienda.</p>
+        </article>
+        <article class="chat-intro__card">
+          <h2>Qué puedes consultar</h2>
+          <ul>
+            <li>Seguimiento de entregas y garantías.</li>
+            <li>Actualizaciones de stock y reservaciones.</li>
+            <li>Escalamiento de pagos o cambios urgentes.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="chat-panel" aria-live="polite">
+      <div class="chat-panel__header">
+        <div class="agent">
+          <div class="agent__avatar" aria-hidden="true">👩‍💻</div>
+          <div>
+            <p class="agent__name">
+              <span data-admin-name>Administración Electro-Sale</span> · Panel central
+            </p>
+            <p class="agent__status" data-admin-status>Revisando mensajes manualmente</p>
+          </div>
+        </div>
+        <span class="badge badge--online">Turno activo</span>
+      </div>
+
+      <div class="messages" id="chatLog" role="log">
+        <div class="message message--admin">
+          <p>
+            ¡Hola! Soy <span data-admin-name>la administración</span> 👋 Escríbeme los detalles de
+            tu consulta y me conectaré contigo dentro del mismo chat en cuanto revise tu mensaje.
+          </p>
+          <span class="message__time">Hace instantes</span>
+        </div>
+      </div>
+
+      <form class="input-container" id="chatForm" aria-label="Enviar mensaje a la administración">
+        <label class="sr-only" for="messageInput">Escribe tu mensaje</label>
+        <textarea id="messageInput" placeholder="Escribe aquí tu mensaje..." rows="3" required></textarea>
+        <div class="input-actions">
+          <button type="submit" data-admin-submit>Enviar mensaje</button>
+          <span class="input-hint">
+            Tiempo de respuesta promedio:
+            <strong data-response-time>15&nbsp;min</strong>
+          </span>
+        </div>
+      </form>
+    </section>
+  </main>
 
   <script>
-    function sendMessage() {
-      const input = document.getElementById("userInput");
-      const chat = document.getElementById("chat");
+    const API_BASE = "http://127.0.0.1:3000";
+    const chatLog = document.getElementById('chatLog');
+    const messageInput = document.getElementById('messageInput');
+    const chatForm = document.getElementById('chatForm');
+    const submitButton = document.querySelector('[data-admin-submit]');
+    const responseTimeNode = document.querySelector('[data-response-time]');
+    const adminStatusNode = document.querySelector('[data-admin-status]');
+    const adminNameNodes = document.querySelectorAll('[data-admin-name]');
 
-      if (input.value.trim() !== "") {
-        const userMessage = document.createElement("div");
-        userMessage.textContent = "Tú: " + input.value;
-        userMessage.style.marginBottom = "10px";
-        userMessage.style.fontWeight = "bold";
+    const adminProfile = {
+      nombre: 'Administración de Electro-Sale',
+      estado: 'Revisando mensajes manualmente',
+      tiempoRespuesta: '15 min',
+    };
 
-        chat.appendChild(userMessage);
-        chat.scrollTop = chat.scrollHeight;
-        input.value = "";
+    let confirmationText = `Tu mensaje fue enviado. ${adminProfile.nombre} te responderá en cuanto lo revise.`;
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function applyAdminProfile() {
+      adminNameNodes.forEach((node) => {
+        node.textContent = adminProfile.nombre;
+      });
+
+      if (adminStatusNode && adminProfile.estado) {
+        adminStatusNode.textContent = adminProfile.estado;
+      }
+
+      if (responseTimeNode && adminProfile.tiempoRespuesta) {
+        responseTimeNode.textContent = adminProfile.tiempoRespuesta;
+      }
+
+      if (submitButton) {
+        submitButton.textContent = `Enviar a ${adminProfile.nombre}`;
+      }
+
+      if (chatForm) {
+        chatForm.setAttribute('aria-label', `Enviar mensaje a ${adminProfile.nombre}`);
+      }
+
+      confirmationText = `Tu mensaje fue enviado. ${adminProfile.nombre} te responderá en cuanto lo revise.`;
+    }
+
+    async function fetchAdminProfile() {
+      const storedRole = localStorage.getItem('role');
+      const storedName = localStorage.getItem('userName');
+
+      if (storedRole === 'admin' && storedName) {
+        adminProfile.nombre = storedName;
+        applyAdminProfile();
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/admin/active`);
+        if (!response.ok) return;
+
+        const admin = await response.json();
+        if (admin?.nombre) {
+          adminProfile.nombre = admin.nombre;
+        }
+        if (admin?.estado) {
+          adminProfile.estado = admin.estado;
+        }
+        if (admin?.tiempoRespuesta) {
+          adminProfile.tiempoRespuesta = admin.tiempoRespuesta;
+        }
+
+        applyAdminProfile();
+      } catch (error) {
+        console.warn('No se pudo cargar el administrador activo', error);
       }
     }
+
+    function appendMessage(text, role = 'admin') {
+      const wrapper = document.createElement('div');
+      wrapper.className = `message message--${role}`;
+
+      const paragraph = document.createElement('p');
+      paragraph.textContent = text;
+      wrapper.appendChild(paragraph);
+
+      const timestamp = document.createElement('span');
+      timestamp.className = 'message__time';
+      timestamp.textContent = formatTime(new Date());
+      wrapper.appendChild(timestamp);
+
+      chatLog.appendChild(wrapper);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      appendMessage(message, 'user');
+      messageInput.value = '';
+      messageInput.focus();
+
+      appendMessage(confirmationText, 'admin');
+    });
+
+    applyAdminProfile();
+    fetchAdminProfile();
   </script>
 </body>
 </html>
