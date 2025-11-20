@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const correo = document.getElementById("correo").value.trim();
     const password = document.getElementById("password").value.trim();
-    const role = document.getElementById("role").value;
+    const role = document.getElementById("role").value; // "cliente" | "admin"
 
     if (!correo || !password) {
       errorBox.textContent = "⚠️ Ingrese correo y contraseña";
@@ -35,19 +35,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("http://127.0.0.1:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo, password, role }),
+        body: JSON.stringify({ correo, password, role }), // 👈 MANDAMOS role
       });
 
       const result = await response.json();
 
       if (response.ok && result.token) {
-        alert("✅ Login exitoso");
+        // Guardar token y datos básicos
         localStorage.setItem("token", result.token);
         if (result.user) {
-          localStorage.setItem("role", result.user.role);
+          localStorage.setItem("role", result.user.role || "cliente");
           localStorage.setItem("userName", result.user.nombre || "");
         }
 
+        // Redirigir según rol REAL (no el select)
         if (result.user?.role === "admin") {
           window.location.href = "admin.html";
         } else {

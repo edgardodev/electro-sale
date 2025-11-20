@@ -1,10 +1,15 @@
+<!-- public/formulario.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro - Electro-Sale</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- 🧩 Estilos base compartidos (colores, tipografías, fondo, botones, etc.) -->
+  <link rel="stylesheet" href="css/base.css" />
+  <!-- 🔐 Estilos específicos para pantallas de autenticación (login / registro) -->
+  <link rel="stylesheet" href="css/auth.css" />
 </head>
 <body class="auth-body">
 
@@ -21,7 +26,9 @@
   <main class="auth-container">
     <section class="auth-card auth-card--wide">
       <h1>Crea tu cuenta</h1>
-      <p class="auth-subtitle">Completa tus datos para disfrutar de ofertas exclusivas y gestionar tus pedidos en un solo lugar.</p>
+      <p class="auth-subtitle">
+        Completa tus datos para disfrutar de ofertas exclusivas y gestionar tus pedidos en un solo lugar.
+      </p>
 
       <form class="formulario" id="registerForm" novalidate>
         <div class="form-grid">
@@ -69,7 +76,12 @@
     </section>
   </main>
 
-  <div class="loading-overlay hidden" id="registerLoading" aria-live="polite" aria-busy="true">
+  <div
+    class="loading-overlay hidden"
+    id="registerLoading"
+    aria-live="polite"
+    aria-busy="true"
+  >
     <div class="loading-spinner" role="status" aria-hidden="true"></div>
     <p>Creando tu cuenta...</p>
   </div>

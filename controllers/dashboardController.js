@@ -41,6 +41,8 @@ const formatCurrency = (value) => {
   return Number.isNaN(number) ? 0 : number;
 };
 
+// -------------------- OVERVIEW --------------------
+
 exports.getOverview = async (req, res) => {
   try {
     const [productCountRow] = await queryAsync(
@@ -72,8 +74,13 @@ exports.getOverview = async (req, res) => {
       pendingOrders = pendingRow?.pending || 0;
     }
 
-    const stockMinColumn = await getOptionalColumn("producto", ["stock_minimo", "stockMinimo", "stock_min"]);
-    let criticalSql = "SELECT COUNT(*) AS critical FROM producto WHERE stock <= ?";
+    const stockMinColumn = await getOptionalColumn("producto", [
+      "stock_minimo",
+      "stockMinimo",
+      "stock_min",
+    ]);
+    let criticalSql =
+      "SELECT COUNT(*) AS critical FROM producto WHERE stock <= ?";
     let criticalParams = [5];
 
     if (stockMinColumn) {
@@ -101,7 +108,10 @@ exports.getOverview = async (req, res) => {
       orders: {
         total: ordersRow?.total || 0,
         pending: pendingOrders,
-        trend: pendingOrders > 0 ? "Revisa los pedidos en cola" : "Sin pedidos pendientes",
+        trend:
+          pendingOrders > 0
+            ? "Revisa los pedidos en cola"
+            : "Sin pedidos pendientes",
       },
       critical: {
         total: criticalRow?.critical || 0,
@@ -113,25 +123,43 @@ exports.getOverview = async (req, res) => {
     });
   } catch (error) {
     console.error("Error obteniendo métricas del dashboard:", error);
-    res.status(500).json({ mensaje: "No fue posible obtener las métricas", error });
+    res
+      .status(500)
+      .json({ mensaje: "No fue posible obtener las métricas", error });
   }
 };
 
+// -------------------- PRODUCTS --------------------
+
 exports.getProducts = async (req, res) => {
   try {
-    const stockMinColumn = await getOptionalColumn("producto", ["stock_minimo", "stockMinimo", "stock_min"]);
-    const updatedAtColumn = await getOptionalColumn("producto", ["updated_at", "fecha_actualizacion", "fecha_modificacion"]);
+    const stockMinColumn = await getOptionalColumn("producto", [
+      "stock_minimo",
+      "stockMinimo",
+      "stock_min",
+    ]);
+    const updatedAtColumn = await getOptionalColumn("producto", [
+      "updated_at",
+      "fecha_actualizacion",
+      "fecha_modificacion",
+    ]);
 
     const selectFields = [
       "p.id_producto AS id",
       "p.nombre",
       "p.precio",
       "p.stock",
-      stockMinColumn ? `p.${stockMinColumn} AS stock_minimo` : "NULL AS stock_minimo",
-      updatedAtColumn ? `p.${updatedAtColumn} AS actualizado` : "NULL AS actualizado",
+      stockMinColumn
+        ? `p.${stockMinColumn} AS stock_minimo`
+        : "NULL AS stock_minimo",
+      updatedAtColumn
+        ? `p.${updatedAtColumn} AS actualizado`
+        : "NULL AS actualizado",
     ];
 
-    const sql = `SELECT ${selectFields.join(", ")} FROM producto p ORDER BY p.nombre ASC`;
+    const sql = `SELECT ${selectFields.join(
+      ", "
+    )} FROM producto p ORDER BY p.nombre ASC`;
     const products = await queryAsync(sql);
 
     res.json(
@@ -149,26 +177,53 @@ exports.getProducts = async (req, res) => {
     );
   } catch (error) {
     console.error("Error obteniendo productos del dashboard:", error);
-    res.status(500).json({ mensaje: "No fue posible obtener los productos", error });
+    res
+      .status(500)
+      .json({ mensaje: "No fue posible obtener los productos", error });
   }
 };
 
+// -------------------- ORDERS --------------------
+
 exports.getOrders = async (req, res) => {
   try {
+    // columna de estado
     const estadoColumn = await getOptionalColumn("pedido", ["estado", "status"]);
     const selectEstado = estadoColumn
       ? `COALESCE(p.${estadoColumn}, 'pendiente') AS estado`
       : "'pendiente' AS estado";
+
+    // FK hacia cliente en pedido
+    const pedidoClienteFk = await getOptionalColumn("pedido", [
+      "id_cliente",
+      "idcliente",
+      "cliente_id",
+    ]);
+
+    // PK en cliente
+    const clientePk = await getOptionalColumn("cliente", [
+      "id_cliente",
+      "idcliente",
+      "id",
+    ]);
+
+    let joinCliente = "";
+    let selectCliente = "'Cliente sin nombre' AS cliente";
+
+    if (pedidoClienteFk && clientePk) {
+      joinCliente = `LEFT JOIN cliente c ON p.${pedidoClienteFk} = c.${clientePk}`;
+      selectCliente = "COALESCE(c.nombre, 'Cliente sin nombre') AS cliente";
+    }
 
     const sql = `
       SELECT
         p.id_pedido AS id,
         p.fecha,
         ${selectEstado},
-        c.nombre AS cliente,
+        ${selectCliente},
         COALESCE(SUM(dp.cantidad * prod.precio), 0) AS total
       FROM pedido p
-      LEFT JOIN cliente c ON p.id_cliente = c.id_cliente
+      ${joinCliente}
       LEFT JOIN detalle_pedido dp ON dp.id_pedido = p.id_pedido
       LEFT JOIN producto prod ON prod.id_producto = dp.id_producto
       GROUP BY p.id_pedido
@@ -189,36 +244,52 @@ exports.getOrders = async (req, res) => {
     );
   } catch (error) {
     console.error("Error obteniendo órdenes del dashboard:", error);
-    res.status(500).json({ mensaje: "No fue posible obtener las órdenes", error });
+    res
+      .status(500)
+      .json({ mensaje: "No fue posible obtener las órdenes", error });
   }
 };
+
+// -------------------- UPDATE PRICE --------------------
 
 exports.updateProductPrice = async (req, res) => {
   const { id } = req.params;
   const { precio } = req.body;
 
   if (!precio || Number.isNaN(Number(precio))) {
-    return res.status(400).json({ mensaje: "El precio proporcionado no es válido" });
+    return res
+      .status(400)
+      .json({ mensaje: "El precio proporcionado no es válido" });
   }
 
   try {
     const updateFields = ["precio = ?"];
     const params = [Number(precio), id];
 
-    const updatedAtColumn = await getOptionalColumn("producto", ["updated_at", "fecha_actualizacion", "fecha_modificacion"]);
+    const updatedAtColumn = await getOptionalColumn("producto", [
+      "updated_at",
+      "fecha_actualizacion",
+      "fecha_modificacion",
+    ]);
     if (updatedAtColumn) {
       updateFields.push(`${updatedAtColumn} = NOW()`);
     }
 
-    const sql = `UPDATE producto SET ${updateFields.join(", ")} WHERE id_producto = ?`;
+    const sql = `UPDATE producto SET ${updateFields.join(
+      ", "
+    )} WHERE id_producto = ?`;
     await queryAsync(sql, params);
 
     res.json({ mensaje: "Precio actualizado correctamente" });
   } catch (error) {
     console.error("Error actualizando precio del producto:", error);
-    res.status(500).json({ mensaje: "No fue posible actualizar el precio", error });
+    res
+      .status(500)
+      .json({ mensaje: "No fue posible actualizar el precio", error });
   }
 };
+
+// -------------------- REGISTER INVENTORY --------------------
 
 exports.registerInventory = async (req, res) => {
   const { id_producto, cantidad } = req.body;
@@ -227,13 +298,15 @@ exports.registerInventory = async (req, res) => {
   const quantity = Number(cantidad);
 
   if (!productId || Number.isNaN(productId)) {
-    return res.status(400).json({ mensaje: "Debe indicar un producto válido" });
+    return res
+      .status(400)
+      .json({ mensaje: "Debe indicar un producto válido" });
   }
 
   if (!quantity || Number.isNaN(quantity) || quantity <= 0) {
-    return res
-      .status(400)
-      .json({ mensaje: "La cantidad debe ser un número mayor a cero" });
+    return res.status(400).json({
+      mensaje: "La cantidad debe ser un número mayor a cero",
+    });
   }
 
   try {
@@ -256,6 +329,9 @@ exports.registerInventory = async (req, res) => {
     res.json({ mensaje: "Inventario actualizado", stock: newStock });
   } catch (error) {
     console.error("Error registrando inventario:", error);
-    res.status(500).json({ mensaje: "No fue posible registrar el inventario", error });
+    res.status(500).json({
+      mensaje: "No fue posible registrar el inventario",
+      error,
+    });
   }
 };

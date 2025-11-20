@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ingresar - Electro-Sale</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- 🧩 Estilos base compartidos -->
+  <link rel="stylesheet" href="css/base.css" />
+  <!-- 🔐 Estilos específicos de pantallas de auth (login / registro) -->
+  <link rel="stylesheet" href="css/auth.css" />
 </head>
 <body class="auth-body">
 
@@ -49,7 +53,12 @@
     </section>
   </main>
 
-  <div class="loading-overlay hidden" id="loginLoading" aria-live="polite" aria-busy="true">
+  <div
+    class="loading-overlay hidden"
+    id="loginLoading"
+    aria-live="polite"
+    aria-busy="true"
+  >
     <div class="loading-spinner" role="status" aria-hidden="true"></div>
     <p>Procesando tu acceso...</p>
   </div>

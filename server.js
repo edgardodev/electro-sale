@@ -1,44 +1,39 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
-const port = 3000;
+const path = require("path");
 
-// Middleware
-app.use(express.json());
-
-// ✅ Permitir conexión desde tu frontend (Live Server)
-app.use(cors({
-  origin: "http://127.0.0.1:5500",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-// Importar middlewares y rutas
-const authMiddleware = require("./middlewares/authMiddleware");
-
-// Importar rutas
+// 🔌 Rutas
 const authRoutes = require("./routes/authRoutes");
-const clienteRoutes = require("./routes/clienteRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const productoRoutes = require("./routes/productoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
-const detallePedidoRoutes = require("./routes/detallePedidoRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
 
-// Usar rutas
+const app = express();
+
+// ---------- MIDDLEWARES GLOBALES ----------
+app.use(cors());
+app.use(express.json());
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+
+// ---------- RUTAS DE API ----------
+
+// Auth (registro, login, perfil)
 app.use("/auth", authRoutes);
-app.use("/api/clientes", clienteRoutes);
-app.use("/api/productos", productoRoutes);
-app.use("/api/pedidos", authMiddleware, pedidoRoutes);
-app.use("/api/detalle-pedidos", authMiddleware, detallePedidoRoutes);
+
+// Dashboard admin
 app.use("/api/dashboard", dashboardRoutes);
 
-// Ruta de prueba
-app.get("/", (req, res) => {
-  res.send("🚀 Servidor Electro Sale funcionando correctamente");
-});
+// CRUD de productos
+app.use("/api/productos", productoRoutes);
 
-// Iniciar servidor
-app.listen(port, "127.0.0.1", () => {
-  console.log(`✅ Servidor corriendo en: http://127.0.0.1:${port}`);
+// CRUD de pedidos
+app.use("/api/pedidos", pedidoRoutes);
+
+
+// ---------- ARRANCAR SERVIDOR ----------
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Servidor escuchando en http://127.0.0.1:${PORT}`);
 });
