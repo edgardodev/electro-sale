@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -7,6 +8,8 @@ const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const productoRoutes = require("./routes/productoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
+const clienteRoutes = require("./routes/clienteRoutes");
+const chatRoutes = require("./routes/chatRoutes"); 
 
 const app = express();
 
@@ -31,6 +34,11 @@ app.use("/api/productos", productoRoutes);
 // CRUD de pedidos
 app.use("/api/pedidos", pedidoRoutes);
 
+// CRUD de clientes (registro desde formulario)
+app.use("/api/clientes", clienteRoutes);
+
+// 💬 Chat cliente <-> admin
+app.use("/api/chat", chatRoutes); //
 
 // ---------- ARRANCAR SERVIDOR ----------
 const PORT = process.env.PORT || 3000;

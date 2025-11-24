@@ -477,6 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupPricingForm();
   setupInventoryForm();
   setupFilters();
+  setupAdminChat();
 
   // Carga inicial (con loader) y luego refresco silencioso
   refreshDashboard({ showLoader: true });
@@ -485,3 +486,234 @@ document.addEventListener("DOMContentLoaded", () => {
     REFRESH_INTERVAL_MS
   );
 });
+// ---------- CHAT ADMIN (panel) ----------
+
+const CHAT_BASE = `${API_BASE}/api/chat`;
+
+const chatEl = {
+  clientList: document.getElementById("chatClientList"),
+  chatLog: document.getElementById("adminChatLog"),
+  activeTitle: document.getElementById("chatActiveClientTitle"),
+  activeMeta: document.getElementById("chatActiveClientMeta"),
+  form: document.getElementById("adminChatForm"),
+  input: document.getElementById("adminMessageInput"),
+};
+
+let activeChatClientId = null;
+let chatClientsIntervalId = null;
+let chatConversationIntervalId = null;
+
+function renderChatClients(clients) {
+  if (!chatEl.clientList) return;
+
+  if (!clients || !clients.length) {
+    chatEl.clientList.innerHTML =
+      '<li class="chat-client-list__empty">No hay conversaciones activas.</li>';
+    return;
+  }
+
+  chatEl.clientList.innerHTML = clients
+    .map(
+      (c) => `
+      <li 
+        class="chat-client-list__item"
+        data-client-id="${c.client_id}"
+        data-client-name="${c.client_name || "Cliente sin nombre"}"
+        data-client-email="${c.client_email || ""}"
+      >
+        <div class="chat-client-list__name">
+          ${c.client_name || "Cliente sin nombre"}
+        </div>
+        <div class="chat-client-list__email">
+          ${c.client_email || ""}
+        </div>
+        <div class="chat-client-list__last-message">
+          ${c.last_message || ""}
+        </div>
+        <div class="chat-client-list__time">
+          ${c.last_message_at ? new Date(c.last_message_at).toLocaleString("es-CO") : ""}
+        </div>
+      </li>
+    `
+    )
+    .join("");
+}
+
+async function loadChatClients() {
+  if (!chatEl.clientList) return;
+
+  try {
+    const token = getToken();
+    const headers = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${CHAT_BASE}/clients`, { headers });
+    if (!res.ok) {
+      console.error("❌ Error al cargar lista de clientes de chat");
+      return;
+    }
+
+    const data = await res.json();
+    renderChatClients(data);
+  } catch (err) {
+    console.error("❌ Error al obtener clientes de chat:", err);
+  }
+}
+
+function renderAdminMessages(messages) {
+  if (!chatEl.chatLog) return;
+
+  chatEl.chatLog.innerHTML = "";
+
+  if (!messages || !messages.length) {
+    chatEl.chatLog.innerHTML =
+      '<div class="message message--admin"><p>Aún no hay mensajes en esta conversación.</p></div>';
+    return;
+  }
+
+  messages.forEach((msg) => {
+    const isAdmin = msg.sender === "admin";
+    const wrapper = document.createElement("div");
+    wrapper.className = `message ${
+      isAdmin ? "message--admin" : "message--user"
+    }`;
+
+    const p = document.createElement("p");
+    p.textContent = msg.message;
+    wrapper.appendChild(p);
+
+    const span = document.createElement("span");
+    span.className = "message__time";
+    span.textContent = msg.created_at
+      ? new Date(msg.created_at).toLocaleString("es-CO")
+      : "";
+    wrapper.appendChild(span);
+
+    chatEl.chatLog.appendChild(wrapper);
+  });
+
+  chatEl.chatLog.scrollTop = chatEl.chatLog.scrollHeight;
+}
+
+async function loadAdminConversation(clientId) {
+  if (!clientId || !chatEl.chatLog) return;
+
+  try {
+    const token = getToken();
+    const headers = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const res = await fetch(
+      `${CHAT_BASE}/messages/${encodeURIComponent(clientId)}`,
+      { headers }
+    );
+
+    if (!res.ok) {
+      console.error("❌ Error al cargar conversación con cliente", clientId);
+      return;
+    }
+
+    const data = await res.json();
+    renderAdminMessages(data);
+  } catch (err) {
+    console.error("❌ Error al obtener conversación:", err);
+  }
+}
+
+function clearConversationInterval() {
+  if (chatConversationIntervalId) {
+    clearInterval(chatConversationIntervalId);
+    chatConversationIntervalId = null;
+  }
+}
+
+function setupAdminChat() {
+  // Si no existe la sección de chat en esta página, salimos
+  if (!chatEl.clientList || !chatEl.chatLog || !chatEl.form || !chatEl.input) {
+    return;
+  }
+
+  // Cargar clientes inicial
+  loadChatClients();
+
+  // Refrescar lista de clientes cada 10s
+  chatClientsIntervalId = setInterval(loadChatClients, 10000);
+
+  // Click en un cliente de la lista
+  chatEl.clientList.addEventListener("click", (event) => {
+    const item = event.target.closest(".chat-client-list__item");
+    if (!item) return;
+
+    activeChatClientId = item.dataset.clientId;
+
+    const name = item.dataset.clientName || "Cliente";
+    const email = item.dataset.clientEmail || "";
+
+    if (chatEl.activeTitle) {
+      chatEl.activeTitle.textContent = name;
+    }
+    if (chatEl.activeMeta) {
+      chatEl.activeMeta.textContent = email
+        ? `${email} · ID ${activeChatClientId}`
+        : `ID ${activeChatClientId}`;
+    }
+
+    // Cargar conversación inicial
+    loadAdminConversation(activeChatClientId);
+
+    // Refresco periódico de la conversación
+    clearConversationInterval();
+    chatConversationIntervalId = setInterval(
+      () => loadAdminConversation(activeChatClientId),
+      5000
+    );
+  });
+
+  // Enviar respuesta del admin
+  chatEl.form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const text = chatEl.input.value.trim();
+    if (!text) return;
+
+    if (!activeChatClientId) {
+      alert("Selecciona primero un cliente para responder.");
+      return;
+    }
+
+    try {
+      const token = getToken();
+      const headers = { "Content-Type": "application/json" };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${CHAT_BASE}/messages`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          clientId: activeChatClientId,
+          sender: "admin",
+          message: text,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        console.error("❌ Error al enviar respuesta:", body);
+        alert(body.mensaje || "No se pudo enviar la respuesta.");
+        return;
+      }
+
+      chatEl.input.value = "";
+      // Actualizar conversación inmediatamente
+      loadAdminConversation(activeChatClientId);
+    } catch (err) {
+      console.error("❌ Error al enviar mensaje de admin:", err);
+      alert("Error de conexión al enviar la respuesta.");
+    }
+  });
+}

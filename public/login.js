@@ -1,8 +1,20 @@
 // public/login.js
+"use strict";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
+  if (!form) return; 
+
   const errorBox = document.getElementById("error");
   const loadingOverlay = document.getElementById("loginLoading");
+
+  const API_BASE_URL = "http://127.0.0.1:3000";
+  const AUTH_LOGIN_URL = `${API_BASE_URL}/auth/login`;
+
+  const setError = (message) => {
+    if (!errorBox) return;
+    errorBox.textContent = message;
+  };
 
   const showLoading = () => {
     if (!loadingOverlay) return;
@@ -24,31 +36,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = document.getElementById("role").value; // "cliente" | "admin"
 
     if (!correo || !password) {
-      errorBox.textContent = "⚠️ Ingrese correo y contraseña";
+      setError("⚠️ Ingrese correo y contraseña");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+      setError("⚠️ Ingrese un correo válido");
       return;
     }
 
     try {
       showLoading();
-      errorBox.textContent = "";
+      setError("");
 
-      const response = await fetch("http://127.0.0.1:3000/auth/login", {
+      const response = await fetch(AUTH_LOGIN_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo, password, role }), // 👈 MANDAMOS role
+        body: JSON.stringify({ correo, password, role }), // mandamos role como pide el backend
       });
 
-      const result = await response.json();
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (_) {
+        result = {};
+      }
 
       if (response.ok && result.token) {
-        // Guardar token y datos básicos
+        // Guardar token
         localStorage.setItem("token", result.token);
+
+        // Guardar datos del usuario para saludo + chat
         if (result.user) {
           localStorage.setItem("role", result.user.role || "cliente");
           localStorage.setItem("userName", result.user.nombre || "");
+          localStorage.setItem("userEmail", result.user.correo || "");
+          localStorage.setItem("userId", String(result.user.id || ""));
         }
 
-        // Redirigir según rol REAL (no el select)
+        // Redirigir según rol REAL (el que viene del backend)
         if (result.user?.role === "admin") {
           window.location.href = "admin.html";
         } else {
@@ -57,10 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      errorBox.textContent = result.message || "❌ Credenciales inválidas";
+      // Errores de credenciales / backend
+      setError(result.message || "❌ Credenciales inválidas");
     } catch (error) {
       console.error("❌ Error en login:", error);
-      errorBox.textContent = "Error de conexión con el servidor";
+      setError("Error de conexión con el servidor");
     } finally {
       hideLoading();
     }

@@ -1,3 +1,4 @@
+// public/producto.js
 const API_BASE = "http://127.0.0.1:3000";
 
 const getToken = () => localStorage.getItem("token");
@@ -156,6 +157,19 @@ const bootstrapPage = async () => {
     loadingOverlay: document.getElementById("catalogLoading"),
   };
 
+  // precargar saludo desde localStorage
+  const storedName = localStorage.getItem("userName");
+  const storedRole = localStorage.getItem("role");
+
+  if (storedName && elements.userName) {
+    elements.userName.textContent = storedName;
+  }
+
+  if (storedRole && elements.userRole) {
+    elements.userRole.textContent =
+      storedRole === "admin" ? "administrador" : "cliente";
+  }
+
   let allProducts = [];
 
   const commonHeaders = {
@@ -163,6 +177,7 @@ const bootstrapPage = async () => {
     Authorization: `Bearer ${token}`,
   };
 
+  // -------- Validar perfil y rol ----------
   try {
     showLoading(elements.loadingOverlay);
 
@@ -172,7 +187,7 @@ const bootstrapPage = async () => {
     });
 
     if (!perfilResponse.ok) {
-      throw new Error("Token inválido o expirado");
+      throw new Error("NoAutenticado");
     }
 
     const perfilData = await perfilResponse.json();
@@ -204,6 +219,7 @@ const bootstrapPage = async () => {
     return;
   }
 
+  // -------- Cargar productos ----------
   try {
     showLoading(elements.loadingOverlay);
 
@@ -212,8 +228,9 @@ const bootstrapPage = async () => {
       headers: commonHeaders,
     });
 
-    if (productosResponse.status === 401 || productosResponse.status === 403) {
-      throw new Error("Sin autorización");
+    // 🔹 Solo tratamos 401 como sesión inválida
+    if (productosResponse.status === 401) {
+      throw new Error("NoAutenticado");
     }
 
     if (!productosResponse.ok) {
@@ -227,23 +244,29 @@ const bootstrapPage = async () => {
     attachQuickFilters(elements, allProducts);
   } catch (error) {
     console.error("❌ Error al obtener productos:", error);
-    if (error.message === "Sin autorización") {
-      alert("Tu sesión no tiene permisos para ver los productos.");
+
+    if (error.message === "NoAutenticado") {
+      alert("⚠️ Tu sesión expiró, vuelve a iniciar sesión");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("userName");
       window.location.href = "ingresar.html";
       return;
     }
+
+    // Para cualquier otro error mostramos mensaje en la página,
+    // pero ya NO decimos que "no tiene permisos"
     if (elements.emptyState) {
       elements.emptyState.hidden = false;
-      elements.emptyState.textContent = "No pudimos cargar los productos. Intenta nuevamente más tarde.";
+      elements.emptyState.textContent =
+        "No pudimos cargar los productos. Intenta nuevamente más tarde.";
     }
     setProductCount(0, elements.countLabel);
   } finally {
     hideLoading(elements.loadingOverlay);
   }
 
+  // -------- Botones de header ----------
   elements.adminPanel.addEventListener("click", () => {
     window.location.href = "admin.html";
   });

@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "mi_secreto_super_seguro";
 // ✅ Correo que será tratado como administrador
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "edgardoflorez1@gmail.com";
 
-// 📌 Registrar nuevo cliente (siempre como cliente, nunca admin desde aquí)
+// 📌 Registrar nuevo cliente (si aún lo usas)
 exports.registerUser = (req, res) => {
   console.log("Datos recibidos en req.body:", req.body);
 
@@ -20,8 +20,6 @@ exports.registerUser = (req, res) => {
       .json({ message: "Todos los campos son obligatorios" });
   }
 
-  // 💡 Aquí suponemos que tu tabla cliente NO tiene columna role todavía.
-  // Si luego agregas `role`, cambias este INSERT para guardar 'cliente'.
   const query =
     "INSERT INTO cliente (nombre, correo, password) VALUES (?, ?, ?)";
   db.query(query, [nombre, correo, password], (err, result) => {
@@ -35,7 +33,7 @@ exports.registerUser = (req, res) => {
 
 // 📌 Login con JWT y soporte de rol (cliente / admin)
 exports.loginUser = (req, res) => {
-  const { correo, password, role: requestedRole } = req.body; // role viene del select del front
+  const { correo, password, role: requestedRole } = req.body; 
 
   if (!correo || !password) {
     return res
@@ -59,28 +57,30 @@ exports.loginUser = (req, res) => {
     const user = results[0];
 
     // 🧠 Determinar rol REAL del usuario
-    // 1) Si en el futuro tienes columna role/rol, úsala
-    // 2) Si no, tratamos ADMIN_EMAIL como admin y resto cliente
     const dbRole =
       user.role ||
       user.rol ||
       (user.correo === ADMIN_EMAIL ? "admin" : "cliente");
 
-    // 🛡️ Si el usuario intenta entrar como "admin" en el select,
-    //     pero su rol real no es admin → bloqueamos
+    // 🛡️ Bloquear si intenta entrar como admin sin serlo
     if (requestedRole === "admin" && dbRole !== "admin") {
       return res
         .status(403)
         .json({ message: "No tienes permisos de administrador" });
     }
 
-    const userId = user.idcliente || user.id_cliente || user.id; // por si el nombre cambia
+    const userId = user.idcliente || user.id_cliente || user.id;
 
-    // 🔐 Incluir el rol dentro del token
+    // 🔐  NOMBRE dentro del token
     const token = jwt.sign(
-      { id: userId, correo: user.correo, role: dbRole },
+      {
+        id: userId,
+        correo: user.correo,
+        role: dbRole,
+        nombre: user.nombre,      
+      },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "4h" }
     );
 
     res.status(200).json({
@@ -88,9 +88,9 @@ exports.loginUser = (req, res) => {
       token,
       user: {
         id: userId,
-        nombre: user.nombre,
+        nombre: user.nombre,    
         correo: user.correo,
-        role: dbRole, // 👈 importantísimo para el front
+        role: dbRole,
       },
     });
   });

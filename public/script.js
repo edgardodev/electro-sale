@@ -1,200 +1,146 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('registerForm');
+// public/script.js
+"use strict";
 
-  if (!form) {
-    return;
-  }
+const API_BASE_URL = "http://127.0.0.1:3000";
+const CLIENTES_URL = `${API_BASE_URL}/api/clientes`;
 
-  const messageBox = document.getElementById('registerMessage');
-  const loadingOverlay = document.getElementById('registerLoading');
+const safeQuery = (selector) => document.querySelector(selector);
 
-  const setMessage = (message, type = 'neutral') => {
-    if (!messageBox) return;
-    messageBox.textContent = message;
-    messageBox.classList.remove('is-error', 'is-success');
-
-    if (type === 'error') {
-      messageBox.classList.add('is-error');
-    } else if (type === 'success') {
-      messageBox.classList.add('is-success');
-    }
-  };
-
-  const showLoading = () => {
-    if (!loadingOverlay) return;
-    loadingOverlay.classList.remove('hidden');
-    requestAnimationFrame(() => loadingOverlay.classList.add('active'));
-  };
-
-  const hideLoading = () => {
-    if (!loadingOverlay) return;
-    loadingOverlay.classList.remove('active');
-    setTimeout(() => loadingOverlay.classList.add('hidden'), 250);
-  };
-
-  form.addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    const nombre = document.getElementById('nombre').value.trim();
-    const correo = document.getElementById('correo').value.trim();
-    const direccion = document.getElementById('direccion').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const metodo_pago = document.querySelector('input[name="pago"]:checked')?.value || '';
-
-    if (!nombre || !correo || !direccion || !password || !metodo_pago) {
-      setMessage('⚠️ Favor llenar todos los campos.', 'error');
-      return;
-    }
-
-    if (password.length < 8) {
-      setMessage('⚠️ La contraseña debe tener al menos 8 caracteres.', 'error');
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(correo)) {
-      setMessage('⚠️ Ingrese un correo válido.', 'error');
-      return;
-    }
-
-    try {
-      setMessage('Procesando tu registro...');
-      showLoading();
-
-      const response = await fetch('http://127.0.0.1:3000/api/clientes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, correo, direccion, metodo_pago, password })
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setMessage('✅ Usuario creado correctamente. Revisa tu correo para confirmar tu cuenta.', 'success');
-        form.reset();
-      } else {
-        setMessage(result.message ? `❌ ${result.message}` : '❌ No se pudo registrar el usuario.', 'error');
-      }
-    } catch (error) {
-      console.error('❌ Error al registrar:', error);
-      setMessage('Error de conexión con el servidor.', 'error');
-    } finally {
-      hideLoading();
-    }
-  });
-});
 
 const initRegisterForm = () => {
-  const form = document.getElementById('registerForm');
+  const form = document.getElementById("registerForm");
+  if (!form) return; 
 
-  if (!form) {
-    return;
-  }
+  const messageBox = document.getElementById("registerMessage");
+  const loadingOverlay = document.getElementById("registerLoading");
 
-  const messageBox = document.getElementById('registerMessage');
-  const loadingOverlay = document.getElementById('registerLoading');
-
-  const setMessage = (message, type = 'neutral') => {
+  const setMessage = (message, type = "neutral") => {
     if (!messageBox) return;
     messageBox.textContent = message;
-    messageBox.classList.remove('is-error', 'is-success');
+    messageBox.classList.remove("is-error", "is-success");
 
-    if (type === 'error') {
-      messageBox.classList.add('is-error');
-    } else if (type === 'success') {
-      messageBox.classList.add('is-success');
+    if (type === "error") {
+      messageBox.classList.add("is-error");
+    } else if (type === "success") {
+      messageBox.classList.add("is-success");
     }
   };
 
   const showLoading = () => {
     if (!loadingOverlay) return;
-    loadingOverlay.classList.remove('hidden');
-    requestAnimationFrame(() => loadingOverlay.classList.add('active'));
+    loadingOverlay.classList.remove("hidden");
+    requestAnimationFrame(() => loadingOverlay.classList.add("active"));
   };
 
   const hideLoading = () => {
     if (!loadingOverlay) return;
-    loadingOverlay.classList.remove('active');
-    setTimeout(() => loadingOverlay.classList.add('hidden'), 250);
+    loadingOverlay.classList.remove("active");
+    setTimeout(() => loadingOverlay.classList.add("hidden"), 250);
   };
 
-  form.addEventListener('submit', async (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const nombre = document.getElementById('nombre').value.trim();
-    const correo = document.getElementById('correo').value.trim();
-    const direccion = document.getElementById('direccion').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const metodo_pago = document.querySelector('input[name="pago"]:checked')?.value || '';
+    const nombre = document.getElementById("nombre").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const direccion = document.getElementById("direccion").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const metodo_pago =
+      document.querySelector('input[name="pago"]:checked')?.value || "";
 
+    // Validaciones básicas en el cliente
     if (!nombre || !correo || !direccion || !password || !metodo_pago) {
-      setMessage('⚠️ Favor llenar todos los campos.', 'error');
+      setMessage("⚠️ Favor llenar todos los campos.", "error");
       return;
     }
 
     if (password.length < 8) {
-      setMessage('⚠️ La contraseña debe tener al menos 8 caracteres.', 'error');
+      setMessage(
+        "⚠️ La contraseña debe tener al menos 8 caracteres.",
+        "error"
+      );
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-      setMessage('⚠️ Ingrese un correo válido.', 'error');
+      setMessage("⚠️ Ingrese un correo válido.", "error");
       return;
     }
 
     try {
-      setMessage('Procesando tu registro...');
+      setMessage("Procesando tu registro...");
       showLoading();
 
-      const response = await fetch('http://127.0.0.1:3000/api/clientes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, correo, direccion, metodo_pago, password })
+      const response = await fetch(CLIENTES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          correo,
+          direccion,
+          metodo_pago,
+          password,
+        }),
       });
 
-      const result = await response.json();
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (_) {
+        result = {};
+      }
 
       if (response.ok) {
-        setMessage('✅ Usuario creado correctamente. Revisa tu correo para confirmar tu cuenta.', 'success');
+        setMessage(
+          result.message ||
+            "✅ Usuario creado correctamente. Revisa tu correo para confirmar tu cuenta.",
+          "success"
+        );
         form.reset();
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
       } else {
-        setMessage(result.message ? `❌ ${result.message}` : '❌ No se pudo registrar el usuario.', 'error');
+        const errorMsg =
+          result.message ||
+          `❌ No se pudo registrar el usuario (código ${response.status}).`;
+        setMessage(errorMsg, "error");
       }
     } catch (error) {
-      console.error('❌ Error al registrar:', error);
-      setMessage('Error de conexión con el servidor.', 'error');
+      console.error("❌ Error al registrar:", error);
+      setMessage("Error de conexión con el servidor.", "error");
     } finally {
       hideLoading();
     }
   });
 };
 
-const initAdminDashboard = () => {
-  const loadingOverlay = document.querySelector('.dashboard-loading');
 
-  if (!loadingOverlay) {
-    return;
-  }
+const initAdminDashboard = () => {
+  const loadingOverlay = safeQuery(".dashboard-loading");
+  if (!loadingOverlay) return; 
 
   const setBusyState = (isBusy) => {
-    document.body.classList.toggle('is-loading', isBusy);
-    document.body.setAttribute('aria-busy', String(isBusy));
+    document.body.classList.toggle("is-loading", isBusy);
+    document.body.setAttribute("aria-busy", String(isBusy));
   };
 
   const showLoading = (message) => {
     if (message) {
-      const messageNode = loadingOverlay.querySelector('.dashboard-loading__message');
+      const messageNode = loadingOverlay.querySelector(
+        ".dashboard-loading__message"
+      );
       if (messageNode) {
         messageNode.textContent = message;
       }
     }
-    loadingOverlay.setAttribute('aria-hidden', 'false');
+    loadingOverlay.setAttribute("aria-hidden", "false");
     setBusyState(true);
   };
 
   const hideLoading = () => {
-    loadingOverlay.setAttribute('aria-hidden', 'true');
+    loadingOverlay.setAttribute("aria-hidden", "true");
     setBusyState(false);
   };
 
@@ -211,28 +157,30 @@ const initAdminDashboard = () => {
 
   const handleAsyncSubmit = (event) => {
     const submitter = event.submitter;
-    if (submitter && submitter.dataset.async === 'false') {
+    if (submitter && submitter.dataset.async === "false") {
       return;
     }
 
-    const statusMessage = submitter?.dataset.loadingMessage || 'Guardando cambios…';
+    const statusMessage =
+      submitter?.dataset.loadingMessage || "Guardando cambios…";
     showLoading(statusMessage);
     registerFallback();
   };
 
-  document.querySelectorAll('.js-async-form').forEach((form) => {
-    form.addEventListener('submit', handleAsyncSubmit);
+  document.querySelectorAll(".js-async-form").forEach((form) => {
+    form.addEventListener("submit", handleAsyncSubmit);
   });
 
   document.querySelectorAll('[data-async="true"]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const statusMessage = button.dataset.loadingMessage || 'Sincronizando con el servidor…';
+    button.addEventListener("click", () => {
+      const statusMessage =
+        button.dataset.loadingMessage || "Sincronizando con el servidor…";
       showLoading(statusMessage);
       registerFallback();
     });
   });
 
-  document.addEventListener('dashboard:loading', (event) => {
+  document.addEventListener("dashboard:loading", (event) => {
     const detail = event.detail || {};
     if (detail.show) {
       showLoading(detail.message);
@@ -244,9 +192,10 @@ const initAdminDashboard = () => {
     }
   });
 
-  window.addEventListener('load', () => {
+  window.addEventListener("load", () => {
     hideLoading();
   });
+
 
   hideLoading();
 
@@ -255,8 +204,7 @@ const initAdminDashboard = () => {
     hide: hideLoading,
   };
 };
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initRegisterForm();
   initAdminDashboard();
 });

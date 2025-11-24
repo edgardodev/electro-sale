@@ -4,10 +4,12 @@ const productoController = require("../controllers/productoController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminOnly = require("../middlewares/adminOnly");
 
-// CRUD productos SOLO admin
+// 🔓 Lectura de productos: clientes y admins (solo requiere estar logueado)
+router.get("/", authMiddleware, productoController.obtenerProductos);
+router.get("/:id", authMiddleware, productoController.obtenerProductoPorId);
+
+// 🔐 Escritura de productos: SOLO admin
 router.post("/", authMiddleware, adminOnly, productoController.crearProducto);
-router.get("/", authMiddleware, adminOnly, productoController.obtenerProductos);
-router.get("/:id", authMiddleware, adminOnly, productoController.obtenerProductoPorId);
 router.put("/:id", authMiddleware, adminOnly, productoController.actualizarProducto);
 router.delete("/:id", authMiddleware, adminOnly, productoController.eliminarProducto);
 

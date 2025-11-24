@@ -88,26 +88,36 @@
     </section>
   </main>
 
-  <script>
+    <script>
+    "use strict";
+
     const API_BASE = "http://127.0.0.1:3000";
-    const chatLog = document.getElementById('chatLog');
-    const messageInput = document.getElementById('messageInput');
-    const chatForm = document.getElementById('chatForm');
-    const submitButton = document.querySelector('[data-admin-submit]');
-    const responseTimeNode = document.querySelector('[data-response-time]');
-    const adminStatusNode = document.querySelector('[data-admin-status]');
-    const adminNameNodes = document.querySelectorAll('[data-admin-name]');
+    const CHAT_BASE = `${API_BASE}/api/chat`;
+
+    const chatLog = document.getElementById("chatLog");
+    const messageInput = document.getElementById("messageInput");
+    const chatForm = document.getElementById("chatForm");
+    const submitButton = document.querySelector("[data-admin-submit]");
+    const responseTimeNode = document.querySelector("[data-response-time]");
+    const adminStatusNode = document.querySelector("[data-admin-status]");
+    const adminNameNodes = document.querySelectorAll("[data-admin-name]");
+
+    //  PERFIL DE ADMIN 
 
     const adminProfile = {
-      nombre: 'Administración de Electro-Sale',
-      estado: 'Revisando mensajes manualmente',
-      tiempoRespuesta: '15 min',
+      nombre: "Administración de Electro-Sale",
+      estado: "Revisando mensajes manualmente",
+      tiempoRespuesta: "15 min",
     };
 
     let confirmationText = `Tu mensaje fue enviado. ${adminProfile.nombre} te responderá en cuanto lo revise.`;
 
-    function formatTime(date) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const getToken = () => localStorage.getItem("token");
+
+    function formatTime(dateLike) {
+      const date = dateLike instanceof Date ? dateLike : new Date(dateLike);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
     function applyAdminProfile() {
@@ -128,23 +138,26 @@
       }
 
       if (chatForm) {
-        chatForm.setAttribute('aria-label', `Enviar mensaje a ${adminProfile.nombre}`);
+        chatForm.setAttribute(
+          "aria-label",
+          `Enviar mensaje a ${adminProfile.nombre}`
+        );
       }
 
       confirmationText = `Tu mensaje fue enviado. ${adminProfile.nombre} te responderá en cuanto lo revise.`;
     }
 
     async function fetchAdminProfile() {
-      const storedRole = localStorage.getItem('role');
-      const storedName = localStorage.getItem('userName');
+      const storedRole = localStorage.getItem("role");
+      const storedName = localStorage.getItem("userName");
 
-      if (storedRole === 'admin' && storedName) {
+      if (storedRole === "admin" && storedName) {
         adminProfile.nombre = storedName;
         applyAdminProfile();
       }
 
       try {
-        const response = await fetch(`${API_BASE}/api/admin/active`);
+        const response = await fetch(`${API_BASE}/auth/admin/active`);
         if (!response.ok) return;
 
         const admin = await response.json();
@@ -160,41 +173,171 @@
 
         applyAdminProfile();
       } catch (error) {
-        console.warn('No se pudo cargar el administrador activo', error);
+        console.warn("No se pudo cargar el administrador activo", error);
       }
     }
 
-    function appendMessage(text, role = 'admin') {
-      const wrapper = document.createElement('div');
+    //  IDENTIDAD DE CLIENTE PARA EL CHAT 
+
+    function getOrCreateChatClientId() {
+      // Intentamos usar primero un ID estable del login
+      const loginId =
+        localStorage.getItem("userId") ||
+        localStorage.getItem("userEmail") ||
+        "";
+
+      let stored = localStorage.getItem("chatClientId");
+
+      if (loginId) {
+        if (!stored || stored !== loginId) {
+          stored = loginId;
+          localStorage.setItem("chatClientId", stored);
+        }
+      }
+
+      if (!stored) {
+        // Cliente anónimo → generamos un ID pseudo-aleatorio pero persistente
+        stored = "anon-" + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem("chatClientId", stored);
+      }
+
+      return stored;
+    }
+
+    function getChatIdentity() {
+      const clientId = getOrCreateChatClientId();
+      const clientName = localStorage.getItem("userName") || "Cliente";
+      const clientEmail = localStorage.getItem("userEmail") || "";
+      return { clientId, clientName, clientEmail };
+    }
+
+    //  MENSAJES EN EL CHAT 
+
+    function appendMessage(text, role = "admin", createdAt) {
+      const wrapper = document.createElement("div");
       wrapper.className = `message message--${role}`;
 
-      const paragraph = document.createElement('p');
+      const paragraph = document.createElement("p");
       paragraph.textContent = text;
       wrapper.appendChild(paragraph);
 
-      const timestamp = document.createElement('span');
-      timestamp.className = 'message__time';
-      timestamp.textContent = formatTime(new Date());
+      const timestamp = document.createElement("span");
+      timestamp.className = "message__time";
+
+      if (createdAt) {
+        timestamp.textContent = formatTime(createdAt);
+      } else {
+        timestamp.textContent = formatTime(new Date());
+      }
+
       wrapper.appendChild(timestamp);
 
       chatLog.appendChild(wrapper);
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    chatForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const message = messageInput.value.trim();
-      if (!message) return;
+    function renderConversation(messages) {
+      chatLog.innerHTML = "";
 
-      appendMessage(message, 'user');
-      messageInput.value = '';
+      if (!messages || !messages.length) {
+        // Conversación vacía → mensaje de bienvenida
+        appendMessage(
+          `¡Hola! Soy ${adminProfile.nombre} 👋 Escríbeme los detalles de tu consulta y te responderé aquí mismo en cuanto revise tu mensaje.`,
+          "admin"
+        );
+        return;
+      }
+
+      messages.forEach((msg) => {
+        const sender = msg.sender === "client" ? "user" : "admin"; 
+        appendMessage(msg.message, sender, msg.created_at);
+      });
+    }
+
+    async function loadConversation() {
+      const { clientId } = getChatIdentity();
+
+      try {
+        const token = getToken();
+        const headers = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const res = await fetch(
+          `${CHAT_BASE}/messages/${encodeURIComponent(clientId)}`,
+          { headers }
+        );
+
+        if (!res.ok) {
+          console.error("❌ No se pudo cargar la conversación del chat");
+          return;
+        }
+
+        const data = await res.json();
+        renderConversation(data);
+      } catch (error) {
+        console.error("❌ Error cargando conversación:", error);
+      }
+    }
+
+    //  ENVÍO DE MENSAJES DESDE EL CLIENTE 
+
+    chatForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      const { clientId, clientName, clientEmail } = getChatIdentity();
+
+      // mensaje del usuario
+      appendMessage(text, "user");
+      messageInput.value = "";
       messageInput.focus();
 
-      appendMessage(confirmationText, 'admin');
+      try {
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const res = await fetch(`${CHAT_BASE}/messages`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            clientId,
+            clientName,
+            clientEmail,
+            sender: "client",
+            message: text,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          console.error("❌ Error guardando mensaje:", errorBody);
+          
+          return;
+        }
+
+        // Recargamos conversación para incluir lo que haya nuevo desde el admin
+        await loadConversation();
+      } catch (error) {
+        console.error("❌ Error de conexión al enviar mensaje de chat:", error);
+       
+      }
     });
 
+    // INICIALIZACION
+
     applyAdminProfile();
-    fetchAdminProfile();
+    fetchAdminProfile();   
+    loadConversation();   
+
+    // Refresco cada 5 segundos para traer respuestas nuevas del admin
+    setInterval(loadConversation, 5000);
   </script>
+
 </body>
 </html>

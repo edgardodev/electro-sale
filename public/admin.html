@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Administrativo - Electro-Sale</title>
 
+  <!-- Estilos nuevos -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/chat.css" />
 </head>
-
 <body class="dashboard-body" data-api-url="http://127.0.0.1:3000">
+  <!-- Fondo decorativo -->
   <div class="page-background"></div>
 
   <!-- Barra lateral fija con navegación contextual -->
@@ -24,6 +26,7 @@
       <a class="dashboard-nav__link" href="#inventory">Inventario</a>
       <a class="dashboard-nav__link" href="#stock">Stock</a>
       <a class="dashboard-nav__link" href="#orders">Órdenes</a>
+      <a class="dashboard-nav__link" href="#support-chat">Chat</a>
     </nav>
     <div class="dashboard-sidebar__footer">
       <p class="sidebar-subtitle">Sesión activa</p>
@@ -62,7 +65,7 @@
       </div>
     </header>
 
-    <!-- 🔹 Resumen con métricas claves -->
+    <!-- Resumen con métricas claves -->
     <section
       class="dashboard-section dashboard-section--grid"
       aria-labelledby="overview-title"
@@ -80,7 +83,6 @@
             Sincronizando catálogo…
           </p>
         </article>
-
         <article class="metric-card" aria-label="Inventario disponible">
           <span class="metric-icon" aria-hidden="true">📊</span>
           <p class="metric-title">Inventario disponible</p>
@@ -89,7 +91,6 @@
             Esperando datos del inventario…
           </p>
         </article>
-
         <article class="metric-card" aria-label="Órdenes pendientes">
           <span class="metric-icon" aria-hidden="true">🧾</span>
           <p class="metric-title">Órdenes pendientes</p>
@@ -98,7 +99,6 @@
             Sin datos de pedidos.
           </p>
         </article>
-
         <article class="metric-card" aria-label="Nivel de stock crítico">
           <span class="metric-icon" aria-hidden="true">⚠️</span>
           <p class="metric-title">Nivel de stock crítico</p>
@@ -110,7 +110,7 @@
       </div>
     </section>
 
-    <!-- 🔹 Gestión de precios -->
+    <!-- Gestión de precios -->
     <section
       class="dashboard-section"
       id="pricing"
@@ -120,7 +120,6 @@
         <h2 id="pricing-title">Actualizar precios</h2>
         <p>Modifica precios de productos de forma segura y controlada.</p>
       </div>
-
       <form
         id="pricingForm"
         class="panel-card form-grid js-async-form"
@@ -132,12 +131,10 @@
             <option value="">Selecciona un producto del catálogo</option>
           </select>
         </div>
-
         <div class="form-field">
           <label for="current-price">Precio actual</label>
           <input id="current-price" type="text" value="—" readonly />
         </div>
-
         <div class="form-field">
           <label for="new-price">Nuevo precio</label>
           <input
@@ -149,12 +146,10 @@
             required
           />
         </div>
-
         <div class="form-field">
           <label for="price-effective">Fecha de vigencia</label>
-          <input id="price-effective" type="date" />
+          <input id="price-effective" type="date" required />
         </div>
-
         <div class="form-field form-field--full">
           <label for="price-notes">Notas internas</label>
           <textarea
@@ -163,7 +158,7 @@
             placeholder="Motivo del ajuste o referencia de campaña"
           ></textarea>
         </div>
-
+        <!-- Acciones disponibles para el formulario de precios -->
         <div class="form-actions">
           <button
             type="reset"
@@ -181,20 +176,18 @@
             Guardar cambios
           </button>
         </div>
-
         <p
           id="pricingFeedback"
           class="form-feedback"
           aria-live="polite"
         ></p>
       </form>
-
       <p id="pricing-help" class="section-footnote">
         Todos los cambios quedan registrados con fecha y usuario responsable.
       </p>
     </section>
 
-    <!-- 🔹 Carga de inventario nuevo -->
+    <!-- Carga de inventario nuevo -->
     <section
       class="dashboard-section"
       id="inventory"
@@ -204,20 +197,20 @@
         <h2 id="inventory-title">Cargar inventario</h2>
         <p>Ingresa nuevas unidades o lotes completos al sistema.</p>
       </div>
-
-      <form id="inventoryForm" class="panel-card form-grid js-async-form">
+      <form
+        id="inventoryForm"
+        class="panel-card form-grid js-async-form"
+      >
         <div class="form-field">
           <label for="inventory-product">Producto</label>
           <select id="inventory-product" required>
             <option value="">Selecciona un producto existente</option>
           </select>
         </div>
-
         <div class="form-field">
           <label for="inventory-current">Stock actual</label>
           <input id="inventory-current" type="text" value="—" readonly />
         </div>
-
         <div class="form-field">
           <label for="inventory-quantity">Cantidad a ingresar</label>
           <input
@@ -229,12 +222,10 @@
             required
           />
         </div>
-
         <div class="form-field">
           <label for="inventory-date">Fecha de ingreso</label>
-          <input id="inventory-date" type="date" />
+          <input id="inventory-date" type="date" required />
         </div>
-
         <div class="form-field">
           <label for="inventory-supplier">Proveedor (opcional)</label>
           <input
@@ -243,7 +234,6 @@
             placeholder="Proveedor asociado"
           />
         </div>
-
         <div class="form-field form-field--full">
           <label for="inventory-notes">Notas</label>
           <textarea
@@ -252,7 +242,7 @@
             placeholder="Detalle adicional o número de factura"
           ></textarea>
         </div>
-
+        <!-- Acciones disponibles para el formulario de inventario -->
         <div class="form-actions">
           <button
             type="reset"
@@ -270,7 +260,6 @@
             Registrar ingreso
           </button>
         </div>
-
         <p
           id="inventoryFeedback"
           class="form-feedback"
@@ -279,7 +268,7 @@
       </form>
     </section>
 
-    <!-- 🔹 Seguimiento de stock actual -->
+    <!-- Seguimiento del stock actual -->
     <section
       class="dashboard-section"
       id="stock"
@@ -289,8 +278,8 @@
         <h2 id="stock-title">Revisión de stock</h2>
         <p>Monitorea disponibilidad y detecta alertas a tiempo.</p>
       </div>
-
       <div class="panel-card">
+        <!-- Barra de herramientas con acciones de stock -->
         <div class="table-toolbar">
           <div class="search-group">
             <label class="visually-hidden" for="stock-search"
@@ -321,7 +310,6 @@
             </button>
           </div>
         </div>
-
         <div class="table-responsive" role="region" aria-live="polite">
           <table class="dashboard-table">
             <caption class="visually-hidden">
@@ -346,7 +334,7 @@
       </div>
     </section>
 
-    <!-- 🔹 Gestión de órdenes -->
+    <!-- Gestión de órdenes de compra -->
     <section
       class="dashboard-section"
       id="orders"
@@ -356,8 +344,8 @@
         <h2 id="orders-title">Órdenes de compra</h2>
         <p>Haz seguimiento de pedidos y gestiona su estado.</p>
       </div>
-
       <div class="panel-card">
+        <!-- Barra de herramientas con filtros y accesos rápidos -->
         <div class="table-toolbar">
           <div class="filter-group">
             <label for="order-status">Estado</label>
@@ -386,7 +374,6 @@
             </button>
           </div>
         </div>
-
         <div class="table-responsive">
           <table class="dashboard-table">
             <caption class="visually-hidden">
@@ -409,16 +396,85 @@
             </tbody>
           </table>
         </div>
-
         <p id="ordersFeedback" class="section-footnote">
           Sincroniza esta sección para ver los pedidos reales registrados en la
           base de datos.
         </p>
       </div>
     </section>
+
+    <!-- 🔹 Chat con clientes -->
+    <section
+      class="dashboard-section"
+      id="support-chat"
+      aria-labelledby="support-chat-title"
+    >
+      <div class="section-heading">
+        <h2 id="support-chat-title">Chat con clientes</h2>
+        <p>Gestiona las conversaciones iniciadas desde el chat público.</p>
+      </div>
+
+      <div class="panel-card chat-admin-layout">
+        <aside
+          class="chat-admin-sidebar"
+          aria-label="Clientes con conversaciones activas"
+        >
+          <h3 class="chat-admin-sidebar__title">Conversaciones</h3>
+          <ul id="chatClientList" class="chat-client-list">
+            <li class="chat-client-list__empty">
+              Cargando conversaciones…
+            </li>
+          </ul>
+        </aside>
+
+        <section
+          class="chat-admin-conversation"
+          aria-label="Mensajes del cliente seleccionado"
+        >
+          <header class="chat-admin-conversation__header">
+            <h3 id="chatActiveClientTitle">Selecciona un cliente</h3>
+            <p
+              id="chatActiveClientMeta"
+              class="chat-admin-conversation__meta"
+            >
+              No hay cliente seleccionado.
+            </p>
+          </header>
+
+          <div
+            class="messages"
+            id="adminChatLog"
+            role="log"
+            aria-live="polite"
+          ></div>
+
+          <form
+            class="input-container chat-admin-form"
+            id="adminChatForm"
+            aria-label="Responder al cliente seleccionado"
+          >
+            <label class="sr-only" for="adminMessageInput">
+              Escribe tu respuesta
+            </label>
+            <textarea
+              id="adminMessageInput"
+              placeholder="Escribe aquí tu respuesta para el cliente…"
+              rows="3"
+              required
+            ></textarea>
+            <div class="input-actions">
+              <button type="submit">Enviar respuesta</button>
+              <span class="input-hint">
+                Los clientes verán tus mensajes en el chat público.
+              </span>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
   </main>
 
-  <!-- Indicador de carga global para cualquier interacción con el backend -->
+  <!-- Indicador de carga global -->
   <div
     class="dashboard-loading"
     role="status"
@@ -426,12 +482,18 @@
     aria-hidden="true"
   >
     <div class="dashboard-loading__content">
-      <span class="dashboard-loading__spinner" aria-hidden="true"></span>
-      <p class="dashboard-loading__message">Sincronizando con el servidor…</p>
+      <span
+        class="dashboard-loading__spinner"
+        aria-hidden="true"
+      ></span>
+      <p class="dashboard-loading__message">
+        Sincronizando con el servidor…
+      </p>
     </div>
   </div>
 
-  <script src="script.js" defer></script>
-  <script src="admin.js" defer></script>
+  <!-- Scripts -->
+  <script src="script.js" defer></script> <!-- lógica productos/pedidos/etc -->
+  <script src="admin.js" defer></script>  <!-- lógica del chat -->
 </body>
 </html>
