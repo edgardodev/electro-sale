@@ -267,6 +267,58 @@
         ></p>
       </form>
     </section>
+    <!-- === Sección: Gestión de Productos-->
+<section class="dashboard-section" id="admin-products-section" aria-labelledby="admin-products-title">
+  <div class="section-heading">
+    <h2 id="admin-products-title">Gestión de Productos</h2>
+    <p>Crear, editar y eliminar productos; sube imagenes y completa descripción y precio.</p>
+  </div>
+
+  <div class="panel-card">
+    <div class="admin-products-grid">
+      <!-- Formulario crear/editar -->
+      <form id="adminProductForm" class="admin-product-form" enctype="multipart/form-data">
+        <input type="hidden" id="productId" name="id" value="" />
+        <label>Nombre
+          <input name="nombre" id="nombre" required maxlength="255" />
+        </label>
+        <label>Descripción
+          <textarea name="descripcion" id="descripcion" rows="3"></textarea>
+        </label>
+        <label>Precio (COP)
+          <input type="number" name="precio" id="precio" step="0.01" required />
+        </label>
+        <label>Stock
+          <input type="number" name="stock" id="stock" step="1" required />
+        </label>
+        <label>Imagen principal
+          <input type="file" name="imagen" id="imagen" accept="image/*" />
+        </label>
+        <img id="imagenPreview" class="admin-img-preview" style="display:none" alt="Previsualización imagen"/>
+        <div class="form-actions">
+          <button type="submit" class="primary-button" id="btnSaveProduct">Guardar producto</button>
+          <button type="button" id="btnResetProduct" class="secondary-button">Limpiar</button>
+        </div>
+        <p id="adminProductFeedback" class="form-feedback" aria-live="polite"></p>
+      </form>
+
+      <!-- Lista de productos con acciones -->
+      <div class="admin-products-list">
+        <div class="admin-products-controls">
+          <input id="adminSearchProducts" placeholder="Buscar producto..." />
+        </div>
+        <div id="adminProductsContainer" class="admin-products-container">
+          <!-- llenado dinámico -->
+        </div>
+        <div id="adminProductsPager" class="pager"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Añadir al final del body (si no lo tienes ya) -->
+<script src="admin-productos.js" defer></script>
+
 
     <!-- Seguimiento del stock actual -->
     <section
