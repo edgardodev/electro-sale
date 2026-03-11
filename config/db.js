@@ -1,11 +1,12 @@
- const mysql = require('mysql2');
+const mysql = require('mysql2');
 
 // Configura la conexión
 const connection = mysql.createConnection({
-  host: '127.0.0.1',      // o 127.0.0.1
-  user: 'root',           // tu usuario MySQL
-  password: '',           // tu contraseña MySQL (si la tienes)
-  database: 'electrodb'   // tu base de datos
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
 // Probar la conexión
