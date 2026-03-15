@@ -1,7 +1,7 @@
 // public/script.js
 "use strict";
 
-const API_BASE_URL = "http://127.0.0.1:3000";
+const API_BASE_URL = "https://electro-sale.onrender.com";
 const CLIENTES_URL = `${API_BASE_URL}/api/clientes`;
 
 const safeQuery = (selector) => document.querySelector(selector);

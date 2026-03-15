@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorBox = document.getElementById("error");
   const loadingOverlay = document.getElementById("loginLoading");
 
-  const API_BASE_URL = "http://127.0.0.1:3000";
+  const API_BASE_URL = "https://electro-sale.onrender.com";
   const AUTH_LOGIN_URL = `${API_BASE_URL}/auth/login`;
 
   const setError = (message) => {
